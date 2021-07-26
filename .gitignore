@@ -1,0 +1,10 @@
+__pycache__
+*.sqlite3
+*.py[co]
+*.egg-info
+
+.idea/
+.vscode
+.DS_STORE
+
+*.bk
