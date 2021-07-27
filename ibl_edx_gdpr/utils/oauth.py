@@ -7,7 +7,7 @@ user_name = 'ibl.retirement.user'
 email = '{}@ibleducation.com'.format(user_name)
 
 
-def create_ouath_app():
+def create_oauth_app():
     user, user_created = User.objects.get_or_create(username=user_name,
                                                     email=email)
     application_kwargs = dict(

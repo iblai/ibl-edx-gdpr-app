@@ -175,8 +175,8 @@ class Command(BaseCommand):
         if dry_run:
             print("--- Dry run, no changes will be made ---")
 
-        from ibl_edx_gdpr.utils.oauth import create_ouath_app
-        create_ouath_app()
+        from ibl_edx_gdpr.utils.oauth import create_oauth_app
+        create_oauth_app()
 
         new_states = STATES_TO_USE
         self._validate_new_states(new_states)
