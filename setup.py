@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='ibl_edx_gdpr',
-    version='1.0.0',
+    version='1.0.1',
     description='IBL EDX GDPR API',
     author='IBL',
     author_email='info@ibleducation.com',

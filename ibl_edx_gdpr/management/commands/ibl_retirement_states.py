@@ -32,7 +32,6 @@ STATES_TO_USE = [
     'RETIRING_ENROLLMENTS',
     'ENROLLMENTS_COMPLETE',
 
-
     'RETIRING_LMS',
     'LMS_COMPLETE',
 
@@ -40,8 +39,6 @@ STATES_TO_USE = [
     'ABORTED',
     'COMPLETE',
 ]
-
-
 
 if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
     STATES_TO_USE += (
@@ -167,23 +164,19 @@ class Command(BaseCommand):
 
         return states_to_create, states_remaining, states_to_delete
 
-    def _create_retirement_oauth_user(self):
-        """
-        The app would connect to the exposed Openedx user_api to perform its function.
-        :return:
-        """
-        pass
+
 
     def handle(self, *args, **options):
         """
         Execute the command.
         """
-        dry_run = options['dry_run']
+        dry_run = options.get('dry_run', None)
 
         if dry_run:
             print("--- Dry run, no changes will be made ---")
 
-        self._create_retirement_oauth_user()
+        from ibl_edx_gdpr.utils.oauth import create_ouath_app
+        create_ouath_app()
 
         new_states = STATES_TO_USE
         self._validate_new_states(new_states)
