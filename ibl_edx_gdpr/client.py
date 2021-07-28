@@ -29,3 +29,20 @@ class RetirementClient:
         learners_to_retire = api.learners_to_retire(states_to_request, cool_off_days)
 
         return learners_to_retire
+
+
+    def get_learners_to_retire_usernames(self,lms_base_url=None, cool_off_days=COOL_OFF_DAYS):
+        learner_list = []
+        learners =  self.get_learners_to_retire(lms_base_url=None, cool_off_days=COOL_OFF_DAYS)
+        if learners:
+            learner_list = [user['user']['username'] for user in learners]
+        return learner_list
+
+
+    def retire_learner(self, username):
+        """
+        Performs all the retirement steps that is needed to be carried out using the IBL_RETIREMENT_STATES specified in config
+        :param username:
+        :return:
+        """
+        pass
