@@ -10,7 +10,6 @@ with a variety of unpleasant follow-on effects for the partner when
 upgrading the model at a later date.
 """
 
-import copy
 import logging
 
 from django.conf import settings
@@ -19,43 +18,22 @@ from django.db.models import F
 
 from openedx.core.djangoapps.user_api.models import RetirementState, UserRetirementStatus
 
+from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, START_STATE, END_STATES, REQUIRED_STATES, REQ_STR
+
 LOGGER = logging.getLogger(__name__)
-STATES_TO_USE = [
-    'PENDING',
-
-    'LOCKING_ACCOUNT',
-    'LOCKING_COMPLETE',
-
-    'RETIRING_EMAIL_LISTS',
-    'EMAIL_LISTS_COMPLETE',
-
-    'RETIRING_ENROLLMENTS',
-    'ENROLLMENTS_COMPLETE',
-
-    'RETIRING_LMS',
-    'LMS_COMPLETE',
-
-    'ERRORED',
-    'ABORTED',
-    'COMPLETE',
-]
 
 if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
-    STATES_TO_USE += (
+    IBL_RETIREMENT_STATES += (
         'RETIRING_NOTES',
         'NOTES_COMPLETE',
     )
 
 if getattr(settings, 'ENABLE_DISCUSSION_SERVICE', None):
-    STATES_TO_USE += (
+    IBL_RETIREMENT_STATES += (
         'RETIRING_FORUMS',
         'FORUMS_COMPLETE',
     )
-START_STATE = 'PENDING'
-END_STATES = ['ERRORED', 'ABORTED', 'COMPLETE']
-REQUIRED_STATES = copy.deepcopy(END_STATES)
 REQUIRED_STATES.insert(0, START_STATE)
-REQ_STR = ','.join(REQUIRED_STATES)
 
 
 class Command(BaseCommand):
@@ -178,7 +156,7 @@ class Command(BaseCommand):
         from ibl_edx_gdpr.utils.oauth import create_oauth_app
         create_oauth_app()
 
-        new_states = STATES_TO_USE
+        new_states = IBL_RETIREMENT_STATES
         self._validate_new_states(new_states)
         self._check_current_users()
         created, existed, deleted = self._delete_old_states_and_create_new(new_states, dry_run=dry_run)

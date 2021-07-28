@@ -42,10 +42,10 @@ RETIREMENT_STATES = [
 ]
 ```
 
-3. Important, configure SALT that would be used for email and username hashing
+3. Important, configure SALT and username that would be used for email and username hashing
 ```
 RETIRED_USER_SALTS = ['some-Complicated-something', 'some-Complicated-something']
-
+RETIREMENT_SERVICE_WORKER_USERNAME = ibl.retirement.user
 ```
 
 ### Install command
