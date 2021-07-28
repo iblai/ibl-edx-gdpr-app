@@ -20,7 +20,7 @@ class RetirementClient:
         # set lms url properly
         lms_base_url = "http://{}".format(lms_base_url.strip('http://').strip('http://').strip('/'))
         application = get_oauth_app()
-        end_states = [state for state in IBL_RETIREMENT_STATES if 'COMPLETE' not in state]
+        end_states = [state for state in IBL_RETIREMENT_STATES if 'COMPLETE' in state]
         states_to_request = ['PENDING'] + end_states
 
         api = LmsApi(lms_base_url, lms_base_url, application.client_id, application.client_secret)
