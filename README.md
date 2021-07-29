@@ -1,4 +1,6 @@
 ## IBL EDX GDPR API
+This is a wrapper edX app that performs the extra retirement steps once a user requires his account to be deactivated
+
 
 ## Setup
 ### edX Server Setup
