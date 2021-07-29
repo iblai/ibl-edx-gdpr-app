@@ -1,26 +1,57 @@
 import copy
-
+from django.conf import settings
 IBL_RETIREMENT_STATES = [
     'PENDING',
 
-    'LOCKING_ACCOUNT',
-    'LOCKING_COMPLETE',
-
-    'RETIRING_EMAIL_LISTS',
-    'EMAIL_LISTS_COMPLETE',
+    # 'LOCKING_ACCOUNT',
+    # 'LOCKING_COMPLETE',
+    #
+    # 'RETIRING_EMAIL_LISTS',
+    # 'EMAIL_LISTS_COMPLETE',
 
     'RETIRING_ENROLLMENTS',
     'ENROLLMENTS_COMPLETE',
-
-    'RETIRING_LMS',
-    'LMS_COMPLETE',
-
-    'ERRORED',
-    'ABORTED',
-    'COMPLETE',
 ]
+
+if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
+    IBL_RETIREMENT_STATES += (
+        'RETIRING_NOTES',
+        'NOTES_COMPLETE',
+    )
+
+if getattr(settings, 'ENABLE_DISCUSSION_SERVICE', None):
+    IBL_RETIREMENT_STATES += (
+        'RETIRING_FORUMS',
+        'FORUMS_COMPLETE',
+    )
+# This should always come last else errors would happen
+IBL_RETIREMENT_STATES+=['RETIRING_LMS','LMS_COMPLETE',]
+
 START_STATE = 'PENDING'
 END_STATES = ['ERRORED', 'ABORTED', 'COMPLETE']
+
+
+# We attach final states here at the end
+IBL_RETIREMENT_STATES += END_STATES
+
 REQUIRED_STATES = copy.deepcopy(END_STATES)
 REQ_STR = ','.join(REQUIRED_STATES)
 COOL_OFF_DAYS = 0
+ERROR_STATE = 'ERRORED'
+COMPLETE_STATE = 'COMPLETE'
+ABORTED_STATE = 'ABORTED'
+
+RETIREMENT_PIPELINE = [
+    # [start_state, end_state, method to call]
+    # ['LOCKING_ACCOUNT', 'LOCKING_COMPLETE', 'retirement_deactivate_logout'],
+    # ['RETIRING_EMAIL_LISTS', 'EMAIL_LISTS_COMPLETE', 'retirement_retire_mailings'],
+    ['RETIRING_ENROLLMENTS', 'ENROLLMENTS_COMPLETE', 'retirement_unenroll'],
+    # Should always be last
+]
+
+if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
+    RETIREMENT_PIPELINE +=['RETIRING_NOTES','NOTES_COMPLETE', 'retirement_retire_notes'],
+
+if getattr(settings, 'ENABLE_DISCUSSION_SERVICE', None):
+    RETIREMENT_PIPELINE += ['RETIRING_FORUMS','FORUMS_COMPLETE', 'retirement_retire_forum'],
+RETIREMENT_PIPELINE+=['RETIRING_LMS', 'LMS_COMPLETE', 'retirement_lms_retire'],

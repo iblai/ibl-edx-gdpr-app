@@ -11,42 +11,60 @@ FEATURES = {
     ...
 }
 ```
-2. Set RETIREMENT_STATES using the ``./manage.py lms ibl_retirement_states`` or via the API 'api/user_api/populate_retirement'
-```
-RETIREMENT_STATES = [
-    'PENDING',
 
-    'LOCKING_ACCOUNT',
-    'LOCKING_COMPLETE',
+[comment]: <> (2. Set RETIREMENT_STATES using the ``./manage.py lms ibl_retirement_states`` or via the API 'api/user_api/populate_retirement')
 
-    # Use these states only when ENABLE_DISCUSSION_SERVICE is True.
-    'RETIRING_FORUMS',
-    'FORUMS_COMPLETE',
+[comment]: <> (```)
 
-    'RETIRING_EMAIL_LISTS',
-    'EMAIL_LISTS_COMPLETE',
+[comment]: <> (RETIREMENT_STATES = [)
 
-    'RETIRING_ENROLLMENTS',
-    'ENROLLMENTS_COMPLETE',
+[comment]: <> (    'PENDING',)
 
-    # Use these states only when ENABLE_STUDENT_NOTES is True.
-    'RETIRING_NOTES',
-    'NOTES_COMPLETE',
+[comment]: <> (    'LOCKING_ACCOUNT',)
 
-    'RETIRING_LMS',
-    'LMS_COMPLETE',
+[comment]: <> (    'LOCKING_COMPLETE',)
 
-    'ERRORED',
-    'ABORTED',
-    'COMPLETE',
-]
-```
+[comment]: <> (    # Use these states only when ENABLE_DISCUSSION_SERVICE is True.)
 
-3. Important, configure SALT and username that would be used for email and username hashing
+[comment]: <> (    'RETIRING_FORUMS',)
+
+[comment]: <> (    'FORUMS_COMPLETE',)
+
+[comment]: <> (    'RETIRING_EMAIL_LISTS',)
+
+[comment]: <> (    'EMAIL_LISTS_COMPLETE',)
+
+[comment]: <> (    'RETIRING_ENROLLMENTS',)
+
+[comment]: <> (    'ENROLLMENTS_COMPLETE',)
+
+[comment]: <> (    # Use these states only when ENABLE_STUDENT_NOTES is True.)
+
+[comment]: <> (    'RETIRING_NOTES',)
+
+[comment]: <> (    'NOTES_COMPLETE',)
+
+[comment]: <> (    'RETIRING_LMS',)
+
+[comment]: <> (    'LMS_COMPLETE',)
+
+[comment]: <> (    'ERRORED',)
+
+[comment]: <> (    'ABORTED',)
+
+[comment]: <> (    'COMPLETE',)
+
+[comment]: <> (])
+
+[comment]: <> (```)
+
+2. **Important**, configure SALT and Retirement service worker that would be used for email and username hashing
 ```
 RETIRED_USER_SALTS = ['some-Complicated-something', 'some-Complicated-something']
 RETIREMENT_SERVICE_WORKER_USERNAME = ibl.retirement.user
 ```
+
+4. **IMPORTANT** Set a ``HOST = <your-edx-domain>``  to ensure the script works
 
 ### Install command
 #### Install
@@ -74,7 +92,7 @@ In `lms/envs/common.py` and/or `cms/envs/common.py`:
 Add `ibl_edx_gdpr` to `INSTALLED_APPS`:
 
 ```python
-INSTALLED_APPS = INSTALLED_APPS + (
+INSTALLED_APPS = (
     #...
     'ibl_edx_gdpr'
     #...
@@ -84,19 +102,36 @@ INSTALLED_APPS = INSTALLED_APPS + (
 ### Routing
 In `lms/urls.py`:
 
-(_Optional_) Add URL pattern for completion status endpoints if needed.
-
-```python
-urlpatterns += (
-    url(r'^api/ibl/gdpr/', include('ibl_edx_gdpr.urls')),
-)
-```
 
 ### Settings
 
 
 ### Commands
+The application can easily retire a learner in two Scenerio
+
+1. The user clicks the deactivate button in his profile.
+    * Run the retire_learner() function
+        ```python
+       from ibl_edx_gdpr.client import RetirementClient
+       client = RetirementClient()
+      
+      # Check users in retirement (Excludes users that have their username hashed already)
+      client.get_learners_to_retire_usernames()
+      >> ['azeem']
+      
+      # Retire the user
+      client.retire_learner('azeem')
+      b'Learner Retirement: (az) Starting state RETIRING_ENROLLMENTS'
+        b'Learner Retirement: (az) State RETIRING_ENROLLMENTS completed in 0.11639761924743652 seconds'
+        b'Learner Retirement: (az) Progressing to state ENROLLMENTS_COMPLETE'
+        b'Learner Retirement: (az) Starting state RETIRING_LMS'
+        b'Learner Retirement: (az) State RETIRING_LMS completed in 0.10183119773864746 seconds'
+        b'Learner Retirement: (az) Progressing to state LMS_COMPLETE'
+        b'Learner Retirement: (az) Retirement complete for learner az'
+      
+      ```
+    
+
 
 ### Endpoints
 
-See [USAGE](USAGE.md) docs.

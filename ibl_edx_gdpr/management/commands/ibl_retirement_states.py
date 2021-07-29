@@ -22,17 +22,6 @@ from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, START_STATE, END_STATES, 
 
 LOGGER = logging.getLogger(__name__)
 
-if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
-    IBL_RETIREMENT_STATES += (
-        'RETIRING_NOTES',
-        'NOTES_COMPLETE',
-    )
-
-if getattr(settings, 'ENABLE_DISCUSSION_SERVICE', None):
-    IBL_RETIREMENT_STATES += (
-        'RETIRING_FORUMS',
-        'FORUMS_COMPLETE',
-    )
 REQUIRED_STATES.insert(0, START_STATE)
 
 
@@ -75,10 +64,7 @@ class Command(BaseCommand):
         Check UserRetirementStatus for users currently in progress
         """
         if UserRetirementStatus.objects.exclude(current_state__state_name__in=REQUIRED_STATES).exists():
-            raise CommandError(
-                'Users are currently being processed. All users must be in one of these states to run this command: '
-                '{}'.format(REQ_STR)
-            )
+            return False
 
     def _check_users_in_states_to_delete(self, states_to_delete):
         if UserRetirementStatus.objects.filter(current_state__state_name__in=states_to_delete).exists():
@@ -158,15 +144,21 @@ class Command(BaseCommand):
 
         new_states = IBL_RETIREMENT_STATES
         self._validate_new_states(new_states)
-        self._check_current_users()
-        created, existed, deleted = self._delete_old_states_and_create_new(new_states, dry_run=dry_run)
+        add_states = self._check_current_users()
+        if not add_states:
+            created, existed, deleted = self._delete_old_states_and_create_new(new_states, dry_run=dry_run)
 
-        # Report
-        print("States have been synchronized. Differences:")
-        print(u"   Added: {}".format(created))
-        print(u"   Removed: {}".format(deleted))
-        print(u"   Remaining: {}".format(existed))
-        print("States updated successfully. Current states:")
+            # Report
+            print("States have been synchronized. Differences:")
+            print(u"   Added: {}".format(created))
+            print(u"   Removed: {}".format(deleted))
+            print(u"   Remaining: {}".format(existed))
+            print("States updated successfully. Current states:")
+        else:
+            print("Pending Retirements need to be completed")
+            print(u"   Added: {}".format(0))
+            print(u"   Removed: {}".format(0))
+            print("States updated successfully. Current states:")
 
         for state in RetirementState.objects.all():
             print(state)
