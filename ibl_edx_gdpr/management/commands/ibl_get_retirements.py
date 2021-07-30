@@ -37,4 +37,5 @@ class Command(BaseCommand):
         from ibl_edx_gdpr.client import RetirementClient
         client = RetirementClient()
         learners = client.get_learners_to_retire_usernames()
-        print('Retirements Available: ',learners)
+        print('Retirements Available: ')
+        print(learners)
