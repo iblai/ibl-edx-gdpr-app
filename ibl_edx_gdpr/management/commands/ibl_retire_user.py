@@ -1,13 +1,21 @@
 import logging
-
+from openedx.core.release import RELEASE_LINE
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from social_django.models import UserSocialAuth
 
-from common.djangoapps.student.models import AccountRecovery, Registration, get_retired_email_by_email
-from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models
+
+if RELEASE_LINE == 'ironwood':
+    from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
+    from student.models import (
+        get_retired_email_by_email,
+        Registration
+    )
+else:
+    from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models
+    from common.djangoapps.student.models import get_retired_email_by_email, AccountRecovery, Registration
 
 from openedx.core.djangoapps.user_api.models import RetirementState, UserRetirementStatus
 
@@ -82,7 +90,13 @@ class Command(BaseCommand):
 
                 # Delete OAuth tokens associated with the user.
                 retire_dot_oauth2_models(user)
-                AccountRecovery.retire_recovery_email(user.id)
+
+                # Patch for ironwood and other releases
+                if RELEASE_LINE == 'ironwood':
+                    retire_dop_oauth2_models(user)
+                else:
+                    AccountRecovery.retire_recovery_email(user.id)
+
         except KeyError:
             error_message = 'Username not specified {}'.format(user)
             logger.error(error_message)
