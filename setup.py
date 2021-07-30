@@ -16,7 +16,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "backoff==1.5.0",
-        "smmap==4.0.0",
+        "smmap>=3.0.5,==4.0.0",
         "validators==0.18.2",
         "yagocd==0.4.4"
     ]
