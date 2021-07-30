@@ -10,10 +10,10 @@ from openedx.core.release import RELEASE_LINE
 # Simple patch for Ironwood/KOA
 apps = []
 if RELEASE_LINE=='ironwood':
-    apps = ['smmap==3.0.5']
+    apps = ['smmap==3.0.5', "validators==0.17"]
 
 elif RELEASE_LINE == 'koa':
-    apps = ['smmap==4.0.0']
+    apps = ['smmap==4.0.0',"validators==0.18.2",]
 else:
     pass
 
@@ -29,7 +29,6 @@ setup(
     include_package_data=True,
     install_requires=[
         "backoff==1.5.0",
-        "validators==0.18.2",
         "yagocd==0.4.4"
     ]
 )
