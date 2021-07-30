@@ -5,6 +5,19 @@ from setuptools import find_packages, setup
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+from openedx.core.release import RELEASE_LINE
+
+# Simple patch for Ironwood/KOA
+apps = []
+if RELEASE_LINE=='ironwood':
+    apps = ['smmap==3.0.5']
+
+elif RELEASE_LINE == 'koa':
+    apps = ['smmap==4.0.0']
+else:
+    pass
+
+
 setup(
     name='ibl_edx_gdpr',
     version='1.0.1',
@@ -16,7 +29,6 @@ setup(
     include_package_data=True,
     install_requires=[
         "backoff==1.5.0",
-        "smmap>=3.0.5,==4.0.0",
         "validators==0.18.2",
         "yagocd==0.4.4"
     ]
