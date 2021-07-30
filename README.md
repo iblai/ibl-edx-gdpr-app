@@ -111,29 +111,47 @@ In `lms/urls.py`:
 ### Commands
 The application can easily retire a learner in two Scenerio
 
-1. The user clicks the deactivate button in his profile.
-    * Run the retire_learner() function
-        ```python
-       from ibl_edx_gdpr.client import RetirementClient
-       client = RetirementClient()
+1. **User in Retirement Pipeline** : Profile Deactivation/Retirement was/is initiated by the user in his user dashboard
+   
+   * If user has already clicked the deactivate button in his profile.
+   ![img.png](img.png)
+`    * Run the ibl_complete_retirement command
+        ```ssh
+      ./manage.py lms ibl_complete_retirement --username ibltestuser
+      b'Learner Retirement: (ibltestuser) Starting state RETIRING_ENROLLMENTS'
+        b'Learner Retirement: (ibltestuser) State RETIRING_ENROLLMENTS completed in 0.11639761924743652 seconds'
+        b'Learner Retirement: (ibltestuser) Progressing to state ENROLLMENTS_COMPLETE'
+        b'Learner Retirement: (ibltestuser) Starting state RETIRING_LMS'
+        b'Learner Retirement: (ibltestuser) State RETIRING_LMS completed in 0.10183119773864746 seconds'
+        b'Learner Retirement: (ibltestuser) Progressing to state LMS_COMPLETE'
+        b'Learner Retirement: (ibltestuser) Retirement complete for learner ibltestuser'
       
-      # Check users in retirement (Excludes users that have their username hashed already)
-      client.get_learners_to_retire_usernames()
-      >> ['azeem']
+      ````
+2. **Manual Retirement** : Deactivate/retire a user profile without needing the user to click deactivate` in account settings
+   * Add User to Retirement Pipeline
+   ```ssh
+   ./manage.py lms retire_user --username ibluser --user_email ibluser@ibleducation.com
+   
+   
+   
+   ```
+   
+`  * Run the ibl_complete_retirement command
+```ssh
+      ./manage.py lms ibl_complete_retirement --username ibltestuser
+      b'Learner Retirement: (ibltestuser) Starting state RETIRING_ENROLLMENTS'
+        b'Learner Retirement: (ibltestuser) State RETIRING_ENROLLMENTS completed in 0.11639761924743652 seconds'
+        b'Learner Retirement: (ibltestuser) Progressing to state ENROLLMENTS_COMPLETE'
+        b'Learner Retirement: (ibltestuser) Starting state RETIRING_LMS'
+        b'Learner Retirement: (ibltestuser) State RETIRING_LMS completed in 0.10183119773864746 seconds'
+        b'Learner Retirement: (ibltestuser) Progressing to state LMS_COMPLETE'
+        b'Learner Retirement: (ibltestuser) Retirement complete for learner ibltestuser'
       
-      # Retire the user
-      client.retire_learner('azeem')
-      b'Learner Retirement: (az) Starting state RETIRING_ENROLLMENTS'
-        b'Learner Retirement: (az) State RETIRING_ENROLLMENTS completed in 0.11639761924743652 seconds'
-        b'Learner Retirement: (az) Progressing to state ENROLLMENTS_COMPLETE'
-        b'Learner Retirement: (az) Starting state RETIRING_LMS'
-        b'Learner Retirement: (az) State RETIRING_LMS completed in 0.10183119773864746 seconds'
-        b'Learner Retirement: (az) Progressing to state LMS_COMPLETE'
-        b'Learner Retirement: (az) Retirement complete for learner az'
-      
-      ```
-    
+```
 
+### KNOWN ISSUES
+1. JSONDecodeError
+* Check that the HOST variable is valid 
 
-### Endpoints
+2. 
 
