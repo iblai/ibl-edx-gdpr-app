@@ -50,7 +50,7 @@ class RetirementClient:
         :return:
         """
         application = get_oauth_app()
-        self.lms_base_url = "http://{}".format(self.lms_base_url.strip('https://').strip('http://').strip('/'))
+        self.lms_base_url = "https://{}".format(self.lms_base_url.strip('https://').strip('http://').strip('/'))
         self.lms_api = LmsApi(self.lms_base_url, self.lms_base_url, application.client_id, application.client_secret)
 
     def get_learners_to_retire(self, cool_off_days=COOL_OFF_DAYS):
