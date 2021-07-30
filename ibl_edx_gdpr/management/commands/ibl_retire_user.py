@@ -109,5 +109,6 @@ class Command(BaseCommand):
             error_message = '500 error deactivating account {}'.format(exc)
             logger.error(error_message)
             raise CommandError(error_message)
-
-        logger.info("User successfully moved to the retirement pipeline")
+        msg = "User ({}) successfully moved to the retirement pipeline".format(username)
+        logger.info(msg)
+        print(msg)
