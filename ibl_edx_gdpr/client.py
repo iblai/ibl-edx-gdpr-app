@@ -5,7 +5,7 @@ from slumber.exceptions import HttpNotFoundError
 from six import text_type
 
 from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, COOL_OFF_DAYS, END_STATES, ERROR_STATE, COMPLETE_STATE, \
-    RETIREMENT_PIPELINE, START_STATE
+    IBL_RETIREMENT_PIPELINE, START_STATE
 from ibl_edx_gdpr.utils.edx_api import LmsApi
 from ibl_edx_gdpr.utils.oauth import get_oauth_app
 
@@ -124,7 +124,7 @@ class RetirementClient:
         user_prefix = "({})".format(username)
         start_state = None
         try:
-            for start_state, end_state, method in RETIREMENT_PIPELINE:
+            for start_state, end_state, method in IBL_RETIREMENT_PIPELINE:
                 # Skip anything that has already been done
                 if IBL_RETIREMENT_STATES.index(start_state) < learner_state_index:
                     LOG('{} State {} completed in previous run, skipping'.format(user_prefix,start_state))

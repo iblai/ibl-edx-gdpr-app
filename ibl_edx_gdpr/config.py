@@ -41,7 +41,7 @@ ERROR_STATE = 'ERRORED'
 COMPLETE_STATE = 'COMPLETE'
 ABORTED_STATE = 'ABORTED'
 
-RETIREMENT_PIPELINE = [
+IBL_RETIREMENT_PIPELINE = [
     # [start_state, end_state, method to call]
     # ['LOCKING_ACCOUNT', 'LOCKING_COMPLETE', 'retirement_deactivate_logout'],
     # ['RETIRING_EMAIL_LISTS', 'EMAIL_LISTS_COMPLETE', 'retirement_retire_mailings'],
@@ -50,8 +50,11 @@ RETIREMENT_PIPELINE = [
 ]
 
 if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
-    RETIREMENT_PIPELINE +=['RETIRING_NOTES','NOTES_COMPLETE', 'retirement_retire_notes'],
+    IBL_RETIREMENT_PIPELINE += ['RETIRING_NOTES', 'NOTES_COMPLETE', 'retirement_retire_notes'],
 
 if getattr(settings, 'ENABLE_DISCUSSION_SERVICE', None):
-    RETIREMENT_PIPELINE += ['RETIRING_FORUMS','FORUMS_COMPLETE', 'retirement_retire_forum'],
-RETIREMENT_PIPELINE+=['RETIRING_LMS', 'LMS_COMPLETE', 'retirement_lms_retire'],
+    IBL_RETIREMENT_PIPELINE += ['RETIRING_FORUMS', 'FORUMS_COMPLETE', 'retirement_retire_forum'],
+IBL_RETIREMENT_PIPELINE+= ['RETIRING_LMS', 'LMS_COMPLETE', 'retirement_lms_retire'],
+IBL_RETIREMENT_APPNAME = 'IBL Retirement App'
+IBL_RETIREMENT_SERVICE_WORKER = 'ibl.retirement.user'
+IBL_RETIREMENT_EMAIL = '{}@ibleducation.com'.format(IBL_RETIREMENT_SERVICE_WORKER)
