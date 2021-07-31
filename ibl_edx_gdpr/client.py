@@ -1,14 +1,34 @@
 import os
 from functools import partial
+from openedx.core.release import RELEASE_LINE
 from time import time
 from slumber.exceptions import HttpNotFoundError
 from six import text_type
 from django.conf import settings
+from django.contrib.auth.models import User
+
 
 from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, COOL_OFF_DAYS, END_STATES, ERROR_STATE, COMPLETE_STATE, \
     IBL_RETIREMENT_PIPELINE, START_STATE
 from ibl_edx_gdpr.utils.edx_api import LmsApi
 from ibl_edx_gdpr.utils.oauth import get_oauth_app
+
+from django.db import transaction
+from social_django.models import UserSocialAuth
+
+
+if RELEASE_LINE == 'ironwood':
+    from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
+    from student.models import (
+        get_retired_email_by_email,
+        Registration
+    )
+else:
+    from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models
+    from common.djangoapps.student.models import get_retired_email_by_email, AccountRecovery, Registration
+
+from openedx.core.djangoapps.user_api.models import RetirementState, UserRetirementStatus
+
 
 from ibl_edx_gdpr.utils.helpers import (
     _fail,
@@ -40,8 +60,6 @@ class RetirementClient:
     lms_api = None
 
     def __init__(self):
-        self.lms_base_url = "http://{}".format(self.lms_base_url.strip('http://').strip('http://').strip('/'))
-        LOG('Connecting to {}'.format(self.lms_base_url))
         self.setup_api()
 
     def setup_api(self):
@@ -51,6 +69,7 @@ class RetirementClient:
         """
         application = get_oauth_app()
         self.lms_base_url = "https://{}".format(self.lms_base_url.strip('https://').strip('http://').strip('/'))
+        LOG('Connecting to {}'.format(self.lms_base_url))
         self.lms_api = LmsApi(self.lms_base_url, self.lms_base_url, application.client_id, application.client_secret)
 
     def get_learners_to_retire(self, cool_off_days=COOL_OFF_DAYS):
@@ -164,3 +183,41 @@ class RetirementClient:
 
             FAIL_EXCEPTION(ERR_WHILE_RETIRING, '{} Error encountered in state "{}"'.format(user_prefix, start_state),
                            exc)
+
+    def place_in_retirement_pipeline(self, user):
+        if isinstance(user, str):
+            try:
+                user = User.objects.get(username=user)
+            except:
+                error_message = (
+                    'Could not find a user with specified username and email '
+                    'address. Make sure you have everything correct before '
+                    'trying again'
+                )
+                raise ValueError(error_message)
+        else:
+            pass
+        with transaction.atomic():
+            LOG('Initiating Retirement ({})'.format(user.username))
+            # Add user to retirement queue.
+            UserRetirementStatus.create_retirement(user)
+            # Unlink LMS social auth accounts
+            UserSocialAuth.objects.filter(user_id=user.id).delete()
+            # Change LMS password & email
+            user.email = get_retired_email_by_email(user.email)
+            user.set_unusable_password()
+            user.save()
+
+            # Remove the activation keys sent by email to the user for account activation.
+            Registration.objects.filter(user=user).delete()
+
+            # Delete OAuth tokens associated with the user.
+            retire_dot_oauth2_models(user)
+
+            # Patch for ironwood and other releases
+            if RELEASE_LINE == 'ironwood':
+                retire_dop_oauth2_models(user)
+            else:
+                AccountRecovery.retire_recovery_email(user.id)
+
+            LOG('Added to Retirement Pipeline.')

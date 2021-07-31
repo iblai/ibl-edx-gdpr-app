@@ -1,24 +1,7 @@
 import logging
-from openedx.core.release import RELEASE_LINE
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
-from social_django.models import UserSocialAuth
-
-
-if RELEASE_LINE == 'ironwood':
-    from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
-    from student.models import (
-        get_retired_email_by_email,
-        Registration
-    )
-else:
-    from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models
-    from common.djangoapps.student.models import get_retired_email_by_email, AccountRecovery, Registration
-
-from openedx.core.djangoapps.user_api.models import RetirementState, UserRetirementStatus
-
 
 logger = logging.getLogger(__name__)
 
@@ -74,28 +57,8 @@ class Command(BaseCommand):
         user_model = get_user_model()
 
         try:
-            with transaction.atomic():
-                # Add user to retirement queue.
-                UserRetirementStatus.create_retirement(user)
-                # Unlink LMS social auth accounts
-                UserSocialAuth.objects.filter(user_id=user.id).delete()
-                # Change LMS password & email
-                user.email = get_retired_email_by_email(user.email)
-                user.set_unusable_password()
-                user.save()
-
-                # TODO: Unlink social accounts & change password on each IDA.
-                # Remove the activation keys sent by email to the user for account activation.
-                Registration.objects.filter(user=user).delete()
-
-                # Delete OAuth tokens associated with the user.
-                retire_dot_oauth2_models(user)
-
-                # Patch for ironwood and other releases
-                if RELEASE_LINE == 'ironwood':
-                    retire_dop_oauth2_models(user)
-                else:
-                    AccountRecovery.retire_recovery_email(user.id)
+            from ibl_edx_gdpr.client import RetirementClient
+            RetirementClient().place_in_retirement_pipeline(user)
 
         except KeyError:
             error_message = 'Username not specified {}'.format(user)
@@ -110,5 +73,5 @@ class Command(BaseCommand):
             logger.error(error_message)
             raise CommandError(error_message)
         msg = "User ({}) successfully moved to the retirement pipeline".format(username)
-        logger.info(msg)
         print(msg)
+

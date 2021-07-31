@@ -147,10 +147,24 @@ User does not exist in retirement pipeline, we would need to deactivate/retire a
       
     ```
 
+### API
+In `lms/urls.py`:
 
-### KNOWN ISSUES
+(_Optional_) Add URL pattern for retirements endpoints if needed.
+
+```python
+urlpatterns += (
+    url(r'^api/ibl/retirements/', include('ibl_edx_gdpr.urls')),
+)
+```
+## Usages 
+
+See [USAGE](USAGE.md) for how to use with API
+
+### Debugging
 1. JSONDecodeError
-    * Check that the HOST variable is valid 
-
-
+    * Check that the HOST variable is valid
+    
+2. Learner Retirement: Learner retire2@retire.com not found. Please check that the learner is present in UserRetirementStatus, is not already retired, and is in an appropriate state to be acted upon.
+    * Run the `ìbl_retire_user` command passing the username and email as params
 

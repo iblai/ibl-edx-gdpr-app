@@ -4,23 +4,23 @@ Defines URL routes for the API.
 from django.conf import settings
 from django.conf.urls import url
 
-from ibl_edx_gdpr.views.populate_states import populate_retirement_states
+from ibl_edx_gdpr.views import retirement
 
 
 urlpatterns = [
     url(
-        r'^status/certificate/{}?$'.format(settings.COURSE_ID_PATTERN),
-        certificate_status,
-        name="ibl_edx_gdpr_certificate_status"
+        r'^place_in_retirements/',
+        retirement.place_learner_in_retirement_pipeline,
+        name="ibl_edx_gdpr_place_in_retirements"
     ),
     url(
-        r'^status/course/{}?$'.format(settings.COURSE_ID_PATTERN),
-        course_completion,
-        name="ibl_edx_gdpr_course_status"
+        r'^retire_user/',
+        retirement.retire_learner,
+        name="ibl_edx_gdpr_retire_learner"
     ),
     url(
-        r'^course_outline/{}?$'.format(settings.COURSE_ID_PATTERN),
-        course_block_tree,
-        name="ibl_edx_gdpr_course_outline"
-    )
+        r'',
+        retirement.get_learners_in_retirement_pipeline,
+        name="ibl_edx_gdpr_get_retirements"
+    ),
 ]
