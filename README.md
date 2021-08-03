@@ -159,7 +159,8 @@ urlpatterns += (
 ```
 ## Usages 
 
-See [USAGE](USAGE.md) for how to use with API
+See [USAGE](USAGE.md) for how to use with API, Go to admin, Applications and use the IBL Retirement App Credentials to 
+authenticate with the API
 
 ### Debugging
 1. JSONDecodeError
@@ -168,3 +169,6 @@ See [USAGE](USAGE.md) for how to use with API
 2. Learner Retirement: Learner retire2@retire.com not found. Please check that the learner is present in UserRetirementStatus, is not already retired, and is in an appropriate state to be acted upon.
     * Run the `ìbl_retire_user` command passing the username and email as params
 
+
+## Process Flow
+![img_2.png](img_2.png)

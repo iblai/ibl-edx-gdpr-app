@@ -1,3 +1,5 @@
+ **NOTE** Ensure you are using the IBL Retirement App Oauth Credentials (Can be Obtained from the Admin Dashboard)
+
 1. Get users available for retirements
     
     **GET** `/api/ibl/retirements/`
@@ -38,7 +40,8 @@
     ```
 
 3. Complete retirement steps
-    **POST** '/api/ibl/retirements/retire_user'
+   
+    **POST** `/api/ibl/retirements/retire_user`
    
     **BODY** 
     ```
