@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 
 from edx_rest_framework_extensions.auth.jwt.authentication import JwtAuthentication
 from rest_framework import permissions, status
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -16,6 +15,14 @@ from rest_framework.viewsets import ViewSet
 
 from ibl_edx_gdpr.utils.permissions import CanRetireUser
 from ibl_edx_gdpr.client import RetirementClient
+
+
+try:
+    # Ironwood
+    from rest_framework_oauth.authentication import OAuth2Authentication
+except:
+    # KOA
+    from openedx.core.lib.api.authentication import BearerAuthentication as OAuth2Authentication
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +54,7 @@ def request_requires_valid_username(function):
 
 
 @api_view(['GET'])
-# @authentication_classes((JwtAuthentication,))
+@authentication_classes((OAuth2Authentication,))
 @permission_classes([permissions.IsAuthenticated, CanRetireUser, ])
 def get_learners_in_retirement_pipeline(request):
     """
@@ -66,7 +73,7 @@ def get_learners_in_retirement_pipeline(request):
 
 
 @api_view(['POST'])
-# @authentication_classes((JwtAuthentication,))
+@authentication_classes((OAuth2Authentication,))
 @permission_classes([permissions.IsAuthenticated, CanRetireUser, ])
 @request_requires_valid_username
 def place_learner_in_retirement_pipeline(request):
@@ -90,7 +97,7 @@ def place_learner_in_retirement_pipeline(request):
 
 
 @api_view(['POST'])
-# @authentication_classes((JwtAuthentication,))
+@authentication_classes((OAuth2Authentication,))
 @permission_classes([permissions.IsAuthenticated, CanRetireUser, ])
 @request_requires_valid_username
 def retire_learner(request):
