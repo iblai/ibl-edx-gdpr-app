@@ -83,7 +83,7 @@ def place_learner_in_retirement_pipeline(request):
     :return:
     """
     try:
-        username = request.data.get('username')
+        username = str(request.data.get('username'))
         client = RetirementClient()
         client.place_in_retirement_pipeline(username)
     except Exception as e:
@@ -106,7 +106,7 @@ def retire_learner(request):
     :param request:
     :return:
     """
-    username = request.data.get('username')
+    username = str(request.data.get('username'))
     try:
         client = RetirementClient()
         client.retire_learner(username)
