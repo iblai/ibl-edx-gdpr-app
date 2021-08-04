@@ -47,7 +47,7 @@ def request_requires_valid_username(function):
 
 
 @api_view(['GET'])
-@authentication_classes((JwtAuthentication,))
+# @authentication_classes((JwtAuthentication,))
 @permission_classes([permissions.IsAuthenticated, CanRetireUser, ])
 def get_learners_in_retirement_pipeline(request):
     """
@@ -66,7 +66,7 @@ def get_learners_in_retirement_pipeline(request):
 
 
 @api_view(['POST'])
-@authentication_classes((JwtAuthentication,))
+# @authentication_classes((JwtAuthentication,))
 @permission_classes([permissions.IsAuthenticated, CanRetireUser, ])
 @request_requires_valid_username
 def place_learner_in_retirement_pipeline(request):
@@ -90,7 +90,7 @@ def place_learner_in_retirement_pipeline(request):
 
 
 @api_view(['POST'])
-@authentication_classes((JwtAuthentication,))
+# @authentication_classes((JwtAuthentication,))
 @permission_classes([permissions.IsAuthenticated, CanRetireUser, ])
 @request_requires_valid_username
 def retire_learner(request):

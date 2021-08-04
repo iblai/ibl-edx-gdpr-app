@@ -16,7 +16,7 @@
 
 2. Place a fresh user into retirements
 
-   **POST** /api/ibl/retirements/place_in_retirements/`
+   **POST** `/api/ibl/retirements/place_in_retirements/`
 
    **BODY** 
     ```
