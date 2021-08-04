@@ -1,5 +1,5 @@
 from rest_framework import permissions
-
+from django.conf import settings
 
 class CanRetireUser(permissions.BasePermission):
     """
@@ -8,5 +8,5 @@ class CanRetireUser(permissions.BasePermission):
     retire a User account.
     """
     def has_permission(self, request, view):
-        return request.user.has_perm('accounts.can_retire_user')
+        return request.user.username == getattr(settings, 'RETIREMENT_SERVICE_WORKER_USERNAME', False)
 
