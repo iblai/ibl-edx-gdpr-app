@@ -19,7 +19,7 @@ from ibl_edx_gdpr.client import RetirementClient
 
 try:
     # Ironwood
-    from rest_framework_oauth.authentication import OAuth2Authentication
+    from openedx.core.lib.api.authentication import OAuth2AuthenticationAllowInactiveUser as OAuth2Authentication
 except:
     # KOA
     from openedx.core.lib.api.authentication import BearerAuthentication as OAuth2Authentication
