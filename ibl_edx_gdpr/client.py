@@ -68,7 +68,8 @@ class RetirementClient:
         :return:
         """
         application = get_oauth_app()
-        self.lms_base_url = "https://{}".format(self.lms_base_url.strip('https://').strip('http://').strip('/'))
+        #  perflms.socialgoodplatform.com".strip("https://").strip('http://').strip('/')" returns 'erflms.socialgoodplatform.com'
+        self.lms_base_url = "https://{}".format(self.lms_base_url.strip('https://').strip('http://').strip('/').strip())
         LOG('Connecting to {}'.format(self.lms_base_url))
         self.lms_api = LmsApi(self.lms_base_url, self.lms_base_url, application.client_id, application.client_secret)
 

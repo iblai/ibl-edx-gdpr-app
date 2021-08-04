@@ -67,7 +67,6 @@ This is a wrapper edX app that performs the extra retirement steps once a user r
 
 3. **IMPORTANT** Set a ``HOST = <your-edx-domain>``  to ensure the script works
 
-
 4. In `lms/envs/common.py` and/or `cms/envs/common.py`, add `ibl_edx_gdpr` to `INSTALLED_APPS`:
     
     ```python
