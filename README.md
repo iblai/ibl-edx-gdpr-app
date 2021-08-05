@@ -2,9 +2,12 @@
 This is a wrapper edX app that performs the extra retirement steps once a user requires his account to be deactivated
 
 
+Install via `sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
+    git+https://gitlab.com/iblstudios/ibl-edx-gdpr.git`
+
+
 ## Setup
-### edX Server Setup
-1. Enable retirement in LMS, ensure 
+1. Enable retirement in LMS `/lms/envs/common.py` , ensure 
     ```
     FEATURES = {
         ...
@@ -13,61 +16,11 @@ This is a wrapper edX app that performs the extra retirement steps once a user r
     }
     ```
 
-[comment]: <> (2. Set RETIREMENT_STATES using the ``./manage.py lms ibl_retirement_states`` or via the API 'api/user_api/populate_retirement')
 
-[comment]: <> (```)
+2. Set  ``HOST = <your-edx-domain>``  in `lms/envs/common.py` to ensure the script works
 
-[comment]: <> (RETIREMENT_STATES = [)
 
-[comment]: <> (    'PENDING',)
-
-[comment]: <> (    'LOCKING_ACCOUNT',)
-
-[comment]: <> (    'LOCKING_COMPLETE',)
-
-[comment]: <> (    # Use these states only when ENABLE_DISCUSSION_SERVICE is True.)
-
-[comment]: <> (    'RETIRING_FORUMS',)
-
-[comment]: <> (    'FORUMS_COMPLETE',)
-
-[comment]: <> (    'RETIRING_EMAIL_LISTS',)
-
-[comment]: <> (    'EMAIL_LISTS_COMPLETE',)
-
-[comment]: <> (    'RETIRING_ENROLLMENTS',)
-
-[comment]: <> (    'ENROLLMENTS_COMPLETE',)
-
-[comment]: <> (    # Use these states only when ENABLE_STUDENT_NOTES is True.)
-
-[comment]: <> (    'RETIRING_NOTES',)
-
-[comment]: <> (    'NOTES_COMPLETE',)
-
-[comment]: <> (    'RETIRING_LMS',)
-
-[comment]: <> (    'LMS_COMPLETE',)
-
-[comment]: <> (    'ERRORED',)
-
-[comment]: <> (    'ABORTED',)
-
-[comment]: <> (    'COMPLETE',)
-
-[comment]: <> (])
-
-[comment]: <> (```)
-
-2. **Important**, configure SALT and Retirement service worker that would be used for email and username hashing
-    ```
-    RETIRED_USER_SALTS = ['some-Complicated-something', 'some-Complicated-something']
-    RETIREMENT_SERVICE_WORKER_USERNAME = ibl.retirement.user
-    ```
-
-3. **IMPORTANT** Set a ``HOST = <your-edx-domain>``  to ensure the script works
-
-4. In `lms/envs/common.py` and/or `cms/envs/common.py`, add `ibl_edx_gdpr` to `INSTALLED_APPS`:
+3. In `lms/envs/common.py`  add `ibl_edx_gdpr` to `INSTALLED_APPS`:
     
     ```python
     INSTALLED_APPS = [
@@ -76,28 +29,51 @@ This is a wrapper edX app that performs the extra retirement steps once a user r
         #...
     ]
     ```
+  
+ 
+4. Configure in `lms.env.json`   SALT (For email and username hashing ) and RETIREMENT_SERVICE_WORKER_USERNAME 
+   (Only user asides superusers, authorized to perform retirements)
+   
+    ```
+        RETIRED_USER_SALTS = ['some-Complicated-something', 'some-Complicated-something']
+        RETIREMENT_SERVICE_WORKER_USERNAME = ibl.retirement.user
+    ```
 
-### Install command
-#### Install
+5. (_Optional_) In `lms/urls.py` Add URL pattern for retirements API endpoints if needed.
+
+    ```python
+    urlpatterns += (
+        url(r'^api/ibl/retirements/', include('ibl_edx_gdpr.urls')),
+    )
+    ```
+
+6. Restart the lms
+
+**NOTE**: After these steps are done, 
+1. Retirement States Model would be automatically populated with the right RETIREMENT_STATES
+2. A new user `ibl.retirement.user` would be created
+3. A new Django Oauth Toolkit Application `IBL Retirement App` would be created, (use the credentials for calling the API)
+
+
+## Helpful Commands
+### Install
 ```shell
 sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
     git+https://gitlab.com/iblstudios/ibl-edx-gdpr.git
 ```
 
-#### Reinstall
+### Reinstall
 ```shell
 sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install --upgrade --no-deps --force-reinstall \
     git+https://gitlab.com/iblstudios/ibl-edx-gdpr.git
 ```
 
-#### Uninstall
+### Uninstall
 ```shell
 sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip uninstall ibl_edx_gdpr
 ```
 
-
-
-## Commands
+## USAGE
 The application can easily retire a learner in two Scenario
 
 ### Scenario 1 (User in Retirement Pipeline )
@@ -146,22 +122,12 @@ User does not exist in retirement pipeline, we would need to deactivate/retire a
       
     ```
 
-### API
-In `lms/urls.py`:
-
-(_Optional_) Add URL pattern for retirements endpoints if needed.
-
-```python
-urlpatterns += (
-    url(r'^api/ibl/retirements/', include('ibl_edx_gdpr.urls')),
-)
-```
-## Usages 
+## Using the API
 
 See [USAGE](USAGE.md) for how to use with API, Go to admin, Applications and use the IBL Retirement App Credentials to 
 authenticate with the API
 
-### Debugging
+## Debugging
 1. JSONDecodeError
     * Check that the HOST variable is valid
     
