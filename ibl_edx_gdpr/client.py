@@ -6,7 +6,7 @@ from slumber.exceptions import HttpNotFoundError
 from six import text_type
 from django.conf import settings
 from django.contrib.auth.models import User
-
+import re
 
 from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, COOL_OFF_DAYS, END_STATES, ERROR_STATE, COMPLETE_STATE, \
     IBL_RETIREMENT_PIPELINE, START_STATE
@@ -15,7 +15,6 @@ from ibl_edx_gdpr.utils.oauth import get_oauth_app
 
 from django.db import transaction
 from social_django.models import UserSocialAuth
-
 
 if RELEASE_LINE == 'ironwood':
     from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
@@ -28,7 +27,6 @@ else:
     from common.djangoapps.student.models import get_retired_email_by_email, AccountRecovery, Registration
 
 from openedx.core.djangoapps.user_api.models import RetirementState, UserRetirementStatus
-
 
 from ibl_edx_gdpr.utils.helpers import (
     _fail,
@@ -51,12 +49,18 @@ LOG = partial(_log, SCRIPT_SHORTNAME)
 FAIL = partial(_fail, SCRIPT_SHORTNAME)
 FAIL_EXCEPTION = partial(_fail_exception, SCRIPT_SHORTNAME)
 
-AUTH_HEADER = {}
 WORKING_STATES = list(set(IBL_RETIREMENT_STATES) - set(END_STATES + [START_STATE]))
 
 
+def clean_url(url):
+    result = re.findall('https?://|http?://|([A-Za-z_0-9.-]+).*', url)
+    if not result:
+        raise ValueError('Kindly supply a valid HOST value for IBL Retirement app')
+    return result.pop()
+
+
 class RetirementClient:
-    lms_base_url = getattr(settings, 'HOST', 'lms.lenovo.com')
+    lms_base_url = clean_url(getattr(settings, 'HOST', 'lms.lenovo.com'))
     lms_api = None
 
     def __init__(self):
@@ -68,8 +72,6 @@ class RetirementClient:
         :return:
         """
         application = get_oauth_app()
-        #  perflms.socialgoodplatform.com".strip("https://").strip('http://').strip('/')" returns 'erflms.socialgoodplatform.com'
-        self.lms_base_url = "https://{}".format(self.lms_base_url.strip('https://').strip('http://').strip('/').strip())
         LOG('Connecting to {}'.format(self.lms_base_url))
         self.lms_api = LmsApi(self.lms_base_url, self.lms_base_url, application.client_id, application.client_secret)
 
@@ -134,7 +136,8 @@ class RetirementClient:
                                   'UserRetirementStatus, is not already retired, '
                                   'and is in an appropriate state to be acted upon.'.format(username))
         except Exception as exc:  # pylint: disable=broad-except
-            FAIL_EXCEPTION(ERR_SETUP_FAILED, '{} Unexpected error fetching user state!'.format(username), text_type(exc))
+            FAIL_EXCEPTION(ERR_SETUP_FAILED, '{} Unexpected error fetching user state!'.format(username),
+                           text_type(exc))
 
     def retire_learner(self, username):
         """

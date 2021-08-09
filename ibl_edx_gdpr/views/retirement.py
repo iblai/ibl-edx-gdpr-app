@@ -115,26 +115,3 @@ def retire_learner(request):
         return Response({'error': 'Failed to retire learner'}, status=400)
 
     return Response({'message': '{} retired successfully'.format(username)})
-
-
-class IBLRetirementView(ViewSet):
-    """
-    Provides API endpoint for retiring a user.
-    1. Giving a list of possible retirements
-    2.
-    """
-    authentication_classes = (JwtAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, CanRetireUser,)
-    parser_classes = (JSONParser,)
-
-    @request_requires_valid_username
-    def post(self, request):
-        pass
-
-    def get(self, request):
-        """
-        Fetches a list of users needed to have their retirements completed with the ibl_complete_retirements
-        :param request:
-        :return:
-        """
-        pass
