@@ -36,7 +36,7 @@ IBL_RETIREMENT_STATES += END_STATES
 
 REQUIRED_STATES = copy.deepcopy(END_STATES)
 REQ_STR = ','.join(REQUIRED_STATES)
-COOL_OFF_DAYS = 0
+COOL_OFF_DAYS = 0 # Users that requested for deletion instantly can be completely retired, increase to give gap
 ERROR_STATE = 'ERRORED'
 COMPLETE_STATE = 'COMPLETE'
 ABORTED_STATE = 'ABORTED'
@@ -46,14 +46,15 @@ IBL_RETIREMENT_PIPELINE = [
     # ['LOCKING_ACCOUNT', 'LOCKING_COMPLETE', 'retirement_deactivate_logout'],
     # ['RETIRING_EMAIL_LISTS', 'EMAIL_LISTS_COMPLETE', 'retirement_retire_mailings'],
     ['RETIRING_ENROLLMENTS', 'ENROLLMENTS_COMPLETE', 'retirement_unenroll'],
-    # Should always be last
 ]
 
 if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
-    IBL_RETIREMENT_PIPELINE += ['RETIRING_NOTES', 'NOTES_COMPLETE', 'retirement_retire_notes'],
+    IBL_RETIREMENT_PIPELINE += ['RETIRING_NOTES', 'NOTES_COMPLETE', 'retirement_retire_notes']
 
 if getattr(settings, 'ENABLE_DISCUSSION_SERVICE', None):
-    IBL_RETIREMENT_PIPELINE += ['RETIRING_FORUMS', 'FORUMS_COMPLETE', 'retirement_retire_forum'],
+    IBL_RETIREMENT_PIPELINE += ['RETIRING_FORUMS', 'FORUMS_COMPLETE', 'retirement_retire_forum']
+
+# LMS should always be last
 IBL_RETIREMENT_PIPELINE+= ['RETIRING_LMS', 'LMS_COMPLETE', 'retirement_lms_retire'],
 IBL_RETIREMENT_APPNAME = 'IBL Retirement App'
 IBL_RETIREMENT_SERVICE_WORKER = 'ibl.retirement.user'

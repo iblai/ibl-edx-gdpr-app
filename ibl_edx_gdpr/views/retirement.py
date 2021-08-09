@@ -58,7 +58,7 @@ def request_requires_valid_username(function):
 @permission_classes([permissions.IsAuthenticated, CanRetireUser, ])
 def get_learners_in_retirement_pipeline(request):
     """
-    :parameter cool_off_days:int In the past X days, defines how many days has the learner been deactivated
+    :parameter cool_off_days: int In the past X days, defines how many days has the learner been deactivated
     :param request:
     :return:
     """
