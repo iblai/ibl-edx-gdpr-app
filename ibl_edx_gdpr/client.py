@@ -59,6 +59,29 @@ def clean_url(url):
     return result.pop()
 
 
+def _get_learner_state_index_or_exit(learner):
+    """
+    Returns the index in the ALL_STATES retirement state list, validating that it is in
+    an appropriate state to work on.
+    """
+    try:
+        learner_state = learner['current_state']['state_name']
+        original_username = learner['original_username']
+        learner_state_index = IBL_RETIREMENT_STATES.index(learner_state)
+
+        if learner_state in END_STATES:
+            FAIL(ERR_USER_AT_END_STATE, 'User {} already in end state: {}'.format(original_username, learner_state))
+
+        if learner_state in WORKING_STATES:
+            FAIL(ERR_USER_IN_WORKING_STATE, 'User is already in a working state! {}'.format(learner_state))
+
+        return learner_state_index
+    except KeyError:
+        FAIL(ERR_BAD_LEARNER, 'Bad learner response missing current_state or state_name: {}'.format(learner))
+    except ValueError:
+        FAIL(ERR_UNKNOWN_STATE, 'Unknown learner retirement state for learner: {}'.format(learner))
+
+
 class RetirementClient:
     lms_base_url = clean_url(getattr(settings, 'HOST', 'lms.lenovo.com'))
     lms_api = None
@@ -92,52 +115,13 @@ class RetirementClient:
 
         return learners_to_retire
 
-    def get_learners_to_retire_usernames(self, lms_base_url=None, cool_off_days=COOL_OFF_DAYS):
+    def get_learners_to_retire_usernames(self, cool_off_days=COOL_OFF_DAYS):
         learner_list = []
-        learners = self.get_learners_to_retire(cool_off_days=COOL_OFF_DAYS)
+        learners = self.get_learners_to_retire(cool_off_days=cool_off_days)
         if learners:
+            # Strip users that have already been completely retired e.g retired_xgxhgxh
             learner_list = [user['user']['username'] for user in learners if 'retired' not in user['user']['username']]
         return learner_list
-
-    def _get_learner_state_index_or_exit(self, learner):
-        """
-        Returns the index in the ALL_STATES retirement state list, validating that it is in
-        an appropriate state to work on.
-        """
-        try:
-            learner_state = learner['current_state']['state_name']
-            original_username = learner['original_username']
-            learner_state_index = IBL_RETIREMENT_STATES.index(learner_state)
-
-            if learner_state in END_STATES:
-                FAIL(ERR_USER_AT_END_STATE, 'User {} already in end state: {}'.format(original_username, learner_state))
-
-            if learner_state in WORKING_STATES:
-                FAIL(ERR_USER_IN_WORKING_STATE, 'User is already in a working state! {}'.format(learner_state))
-
-            return learner_state_index
-        except KeyError:
-            FAIL(ERR_BAD_LEARNER, 'Bad learner response missing current_state or state_name: {}'.format(learner))
-        except ValueError:
-            FAIL(ERR_UNKNOWN_STATE, 'Unknown learner retirement state for learner: {}'.format(learner))
-
-    def _get_learner_and_state_index_or_exit(self, username):
-        """
-        Double-checks the current learner state, contacting LMS, and maps that state to its
-        index in the pipeline. Exits out if the learner is in an invalid state or not found
-        in LMS.
-        """
-        try:
-            learner = self.lms_api.get_learner_retirement_state(username)
-            learner_state_index = self._get_learner_state_index_or_exit(learner)
-            return learner, learner_state_index
-        except HttpNotFoundError:
-            FAIL(ERR_BAD_LEARNER, 'Learner {} not found. Please check that the learner is present in '
-                                  'UserRetirementStatus, is not already retired, '
-                                  'and is in an appropriate state to be acted upon.'.format(username))
-        except Exception as exc:  # pylint: disable=broad-except
-            FAIL_EXCEPTION(ERR_SETUP_FAILED, '{} Unexpected error fetching user state!'.format(username),
-                           text_type(exc))
 
     def retire_learner(self, username):
         """
@@ -189,6 +173,13 @@ class RetirementClient:
                            exc)
 
     def place_in_retirement_pipeline(self, user):
+        """
+        This is the first step required to start retiring a user, it deactivates user account, nulls password and places
+        such user in User Retirement Status where additional retirement steps can be done.
+
+        :param user: A username or user instance
+        :return:
+        """
         if isinstance(user, str):
             try:
                 user = User.objects.get(username=user)
@@ -225,3 +216,21 @@ class RetirementClient:
                 AccountRecovery.retire_recovery_email(user.id)
 
             LOG('Added to Retirement Pipeline.')
+
+    def _get_learner_and_state_index_or_exit(self, username):
+        """
+        Double-checks the current learner state, contacting LMS, and maps that state to its
+        index in the pipeline. Exits out if the learner is in an invalid state or not found
+        in LMS.
+        """
+        try:
+            learner = self.lms_api.get_learner_retirement_state(username)
+            learner_state_index = _get_learner_state_index_or_exit(learner)
+            return learner, learner_state_index
+        except HttpNotFoundError:
+            FAIL(ERR_BAD_LEARNER, 'Learner {} not found. Please check that the learner is present in '
+                                  'UserRetirementStatus, is not already retired, '
+                                  'and is in an appropriate state to be acted upon.'.format(username))
+        except Exception as exc:  # pylint: disable=broad-except
+            FAIL_EXCEPTION(ERR_SETUP_FAILED, '{} Unexpected error fetching user state!'.format(username),
+                           text_type(exc))
