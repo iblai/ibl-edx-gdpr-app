@@ -105,8 +105,6 @@ class RetirementClient:
         :param cool_off_days: Filters users to continue retirement pipeline that have requested for deletion from X days
         :param
         """
-        # set lms url properly
-
         end_states = [state for state in IBL_RETIREMENT_STATES if 'COMPLETE' in state]
         states_to_request = ['PENDING'] + end_states
 

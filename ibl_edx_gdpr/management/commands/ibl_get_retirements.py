@@ -33,7 +33,6 @@ class Command(BaseCommand):
         """
         Execute the command.
         """
-        dry_run = options.get('dry_run', None)
         from ibl_edx_gdpr.client import RetirementClient
         client = RetirementClient()
         learners = client.get_learners_to_retire_usernames()
