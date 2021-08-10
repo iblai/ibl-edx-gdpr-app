@@ -62,10 +62,10 @@ def get_learners_in_retirement_pipeline(request):
     :param request:
     :return:
     """
-    cool_off_days = request.query_params.get('cool_off_days', None)
+    # cool_off_days = request.query_params.get('cool_off_days', 0)
     try:
         client = RetirementClient()
-        usernames = client.get_learners_to_retire_usernames(cool_off_days=cool_off_days)
+        usernames = client.get_learners_to_retire_usernames()
     except Exception as e:
         logger.error("Error processing task {}".format(e.args))
         return Response({'error': 'Failed to fetch retirements'}, status=400)
