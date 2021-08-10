@@ -20,7 +20,7 @@ else:
 
 setup(
     name='ibl_edx_gdpr',
-    version='1.0.1',
+    version='1.0.2',
     description='IBL EDX GDPR API',
     author='IBL',
     author_email='info@ibleducation.com',

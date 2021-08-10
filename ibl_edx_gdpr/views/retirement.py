@@ -62,7 +62,6 @@ def get_learners_in_retirement_pipeline(request):
     :param request:
     :return:
     """
-    # cool_off_days = request.query_params.get('cool_off_days', 0)
     try:
         client = RetirementClient()
         usernames = client.get_learners_to_retire_usernames()
