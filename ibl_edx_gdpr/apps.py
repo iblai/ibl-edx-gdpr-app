@@ -11,3 +11,6 @@ class EdxGDPRConfig(AppConfig):
 
         command = Command()
         command.handle()
+
+        from .patch import remove_original_values
+        remove_original_values()

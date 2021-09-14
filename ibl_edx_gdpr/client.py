@@ -157,6 +157,9 @@ class RetirementClient:
 
             self.lms_api.update_learner_retirement_state(username, COMPLETE_STATE, 'Learner retirement complete.')
             LOG('{} Retirement complete for learner {}'.format(user_prefix, username))
+            UserRetirementStatus.objects.filter(original_username=username).update(
+                original_username='', original_name='', original_email=''
+            )
         except Exception as exc:  # pylint: disable=broad-except
             exc_msg = _get_error_str_from_exception(exc)
 
