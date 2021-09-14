@@ -1,7 +1,10 @@
 from ibl_edx_gdpr.config import EDX_USER_PROFILE_CHANGED, EMIT_EVENTS
 from eventtracking import tracker
 from django.db.models.signals import post_save
+from django.contrib.auth.models import User
+import logging
 
+logging.getLogger(__name__)
 try:
     from common.djangoapps.student.models import UserProfile
 except:
@@ -10,19 +13,21 @@ except:
 
 def retirement_handler(sender, instance, **kwargs):
     """Emits 'edx.user.settings.changed' event when a user is placed in retirement """
-    context = {
-        'extra': 'ibl.edx.gdpr.retire_learner',
-        'is_retired': 'retired__user' in instance.email,
-        'user_id': instance.user.id,
-        'username': instance.user.username,
-        'email': instance.user.email,
-    }
-    tracker.emit(EDX_USER_PROFILE_CHANGED, context)
+    is_retirement =  'retired__user' in instance.email
+    if is_retirement:
+        context = {
+            'extra': 'ibl.edx.gdpr.retire_learner',
+            'is_gdpr': is_retirement,
+            'user_id': instance.user.id,
+            'username': instance.user.username,
+            'email': instance.user.email,
+        }
+        tracker.emit(EDX_USER_PROFILE_CHANGED, context)
 
 
 def enable_retirement_signal():
     if EMIT_EVENTS:
         post_save.connect(
             retirement_handler,
-            sender=UserProfile,
+            sender=User,
             dispatch_uid='retirement_handler')
