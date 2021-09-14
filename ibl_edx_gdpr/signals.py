@@ -14,6 +14,7 @@ except:
 def retirement_handler(sender, instance, **kwargs):
     """Emits 'edx.user.settings.changed' event when a user is placed in retirement """
     is_retirement =  'retired__user' in instance.email
+    logging.info(f'Event triggered: is_gdpr:{is_retirement}')
     if is_retirement:
         context = {
             'extra': 'ibl.edx.gdpr.retire_learner',
