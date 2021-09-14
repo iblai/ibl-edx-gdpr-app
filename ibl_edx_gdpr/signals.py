@@ -19,9 +19,9 @@ def retirement_handler(sender, instance, **kwargs):
         context = {
             'extra': 'ibl.edx.gdpr.retire_learner',
             'is_gdpr': is_retirement,
-            'user_id': instance.user.id,
-            'username': instance.user.username,
-            'email': instance.user.email,
+            'user_id': instance.id,
+            'username': instance.username,
+            'email': instance.email,
         }
         tracker.emit(EDX_USER_PROFILE_CHANGED, context)
 
