@@ -43,15 +43,13 @@ ABORTED_STATE = 'ABORTED'
 
 IBL_RETIREMENT_PIPELINE = [
     # [start_state, end_state, method to call]
-    # ['LOCKING_ACCOUNT', 'LOCKING_COMPLETE', 'retirement_deactivate_logout'],
-    # ['RETIRING_EMAIL_LISTS', 'EMAIL_LISTS_COMPLETE', 'retirement_retire_mailings'],
     ['RETIRING_ENROLLMENTS', 'ENROLLMENTS_COMPLETE', 'retirement_unenroll'],
 ]
 
-if getattr(settings, 'ENABLE_STUDENT_NOTES', None):
+if getattr(settings.FEATURES, 'ENABLE_STUDENT_NOTES', None):
     IBL_RETIREMENT_PIPELINE += ['RETIRING_NOTES', 'NOTES_COMPLETE', 'retirement_retire_notes']
 
-if getattr(settings, 'ENABLE_DISCUSSION_SERVICE', None):
+if getattr(settings.FEATURES, 'ENABLE_DISCUSSION_SERVICE', None):
     IBL_RETIREMENT_PIPELINE += ['RETIRING_FORUMS', 'FORUMS_COMPLETE', 'retirement_retire_forum']
 
 # LMS should always be last
