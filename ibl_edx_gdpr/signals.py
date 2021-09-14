@@ -27,7 +27,9 @@ def retirement_handler(sender, instance, **kwargs):
 
 
 def enable_retirement_signal():
+
     if EMIT_EVENTS:
+        logging.info('Retirement signals enabled')
         post_save.connect(
             retirement_handler,
             sender=User,
