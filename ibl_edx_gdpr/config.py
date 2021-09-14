@@ -57,3 +57,7 @@ IBL_RETIREMENT_PIPELINE+= ['RETIRING_LMS', 'LMS_COMPLETE', 'retirement_lms_retir
 IBL_RETIREMENT_APPNAME = 'IBL Retirement App'
 IBL_RETIREMENT_SERVICE_WORKER = 'ibl.retirement.user'
 IBL_RETIREMENT_EMAIL = '{}@ibleducation.com'.format(IBL_RETIREMENT_SERVICE_WORKER)
+
+# Event handlers
+EDX_USER_PROFILE_CHANGED = 'edx.user.settings.changed'
+EMIT_EVENTS = bool(getattr(settings, 'IBL_GDPR_EMIT_EVENTS', True))

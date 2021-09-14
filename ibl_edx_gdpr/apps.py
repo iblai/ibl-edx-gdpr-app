@@ -14,3 +14,7 @@ class EdxGDPRConfig(AppConfig):
 
         from .patch import remove_original_values
         remove_original_values()
+
+        # Attach signals to emit retired user in tracking.log
+        from .signals import enable_retirement_signal
+        enable_retirement_signal()
