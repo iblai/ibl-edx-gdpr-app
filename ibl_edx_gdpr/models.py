@@ -7,10 +7,10 @@ logging.getLogger(__name__)
 class RetirementBackgroundCache(models.Model):
     old_value = models.CharField(max_length=255, default='')
     new_value = models.CharField(max_length=255, default='')
-    is_final_task = models.CharField(default=False)
-    completed = models.CharField(default=False)
+    is_final_task = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
 
-    object_id = models.CharField(max_length=127, default='')
+    object_id = models.CharField(max_length=63, default='')
     error = models.TextField(default='')
     last_updated = models.DateTimeField(auto_now=True)
 
