@@ -23,7 +23,7 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
     deleted and we can cleanup reference models
     :return:
     """
-    rbc_object, created = RetirementBackgroundCache.objects.create(
+    rbc_object = RetirementBackgroundCache.objects.create(
         old_value=old_value,
         new_value=new_value,
         is_final_task=final_task,
