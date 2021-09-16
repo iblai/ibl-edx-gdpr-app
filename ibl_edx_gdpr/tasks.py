@@ -45,6 +45,7 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
         for filename in files:
             is_zipped = filename.endswith('.gz')
             if is_zipped:
+                filename = filename.strip('.gz')
                 # Unzip it
                 print(f'Unzipping {filename}')
                 status = subprocess.run(["gzip", "-d", filename])
@@ -73,7 +74,6 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
             # This is a low-impact task, we ignore if it does not zip it again
             if is_zipped:
                 # Return back to zip
-                filename = filename.strip('.gz')
                 status = subprocess.run(["gzip", filename])
                 print('Zipping Back')
                 print(status)
