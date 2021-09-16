@@ -61,3 +61,6 @@ IBL_RETIREMENT_EMAIL = '{}@ibleducation.com'.format(IBL_RETIREMENT_SERVICE_WORKE
 # Event handlers
 EDX_USER_PROFILE_CHANGED = 'edx.user.settings.changed'
 EMIT_EVENTS = bool(getattr(settings, 'IBL_GDPR_EMIT_EVENTS', True))
+
+
+TRACKING_LOG_PATHS = ['/edx/var/log/tracking']

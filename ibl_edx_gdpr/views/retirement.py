@@ -85,6 +85,7 @@ def place_learner_in_retirement_pipeline(request):
         username = str(request.data.get('username'))
         client = RetirementClient()
         client.place_in_retirement_pipeline(username)
+
     except Exception as e:
         if 'has a retirement' in e.args[0]:
             return Response({'message': '{} already in retirement'.format(username)})

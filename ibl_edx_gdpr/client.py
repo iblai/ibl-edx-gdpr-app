@@ -10,6 +10,7 @@ import re
 
 from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, COOL_OFF_DAYS, END_STATES, ERROR_STATE, COMPLETE_STATE, \
     IBL_RETIREMENT_PIPELINE, START_STATE
+from ibl_edx_gdpr.tasks import clean_tracking_logs
 from ibl_edx_gdpr.utils.edx_api import LmsApi
 from ibl_edx_gdpr.utils.oauth import get_oauth_app
 
@@ -129,6 +130,7 @@ class RetirementClient:
         learner, learner_state_index = self._get_learner_and_state_index_or_exit(username)
         user_prefix = "({})".format(username)
         start_state = None
+        old_data = User.objects.get(username=username)
         try:
             for start_state, end_state, method in IBL_RETIREMENT_PIPELINE:
                 # Skip anything that has already been done
@@ -157,6 +159,23 @@ class RetirementClient:
 
             self.lms_api.update_learner_retirement_state(username, COMPLETE_STATE, 'Learner retirement complete.')
             LOG('{} Retirement complete for learner {}'.format(user_prefix, username))
+
+            new_data = User.objects.get(pk=old_data.pk)
+
+            # Clean user data in tracking logs
+            clean_tracking_logs.delay({
+                'old': old_data.username,
+                'new': new_data.username
+            })
+            clean_tracking_logs.delay({
+                'old': old_data.email,
+                'new': new_data.email
+            })
+            clean_tracking_logs.delay({
+                'old': old_data.get_full_name(),
+                'new': ''
+            })
+
             UserRetirementStatus.objects.filter(original_username=username).update(
                 original_username='', original_name='', original_email=''
             )

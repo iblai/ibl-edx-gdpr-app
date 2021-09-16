@@ -8,13 +8,10 @@ class EdxGDPRConfig(AppConfig):
 
     def ready(self):
         from .management.commands.ibl_retirement_states import Command
-
         command = Command()
         command.handle()
 
-        from .patch import remove_original_values
-        remove_original_values()
-
-        # Attach signals to emit retired user in tracking.log
+        # Attach signals to emit retired user events in tracking.log
         from .signals import enable_retirement_signal
         enable_retirement_signal()
+
