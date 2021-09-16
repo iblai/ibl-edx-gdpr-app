@@ -30,24 +30,37 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
 
         object_id=object_id
     )
+    print(f'Starting REPLACE task in directories [{TRACKING_LOG_PATHS}]')
 
     for path in TRACKING_LOG_PATHS:
+        print('*' * 15)
+
+        print(f'Working in {path}')
+
         files = [f for f in listdir(path) if isfile(join(path, f))]
         files.sort()
         files.reverse()
+        print(f"Found {files}")
 
         for filename in files:
             is_zipped = filename.endswith('.gz')
             if is_zipped:
                 # Unzip it
+                print(f'Unzipping {filename}')
                 status = subprocess.run(["gzip", "-d", filename])
+                print(status)
+                print(status.stdout)
                 if status.stderr:
                     error = f"Error while unzipping, Skipping ({filename}) : {status.stderr}"
                     logging.error(error)
                     rbc_object.log_error(error)
                     continue
 
+            print(f'Replacing {new_value}')
             status = subprocess.run(["sed", "-i", f"s/{old_value}/{new_value}/g", filename])
+
+            print(status)
+            print(status.stdout)
             if status.stderr:
                 error = f"Error while replacing values for {new_value} ({filename}) : {status.stderr}"
                 logging.error(error)
@@ -62,6 +75,9 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
                 # Return back to zip
                 filename = filename.strip('.gz')
                 status = subprocess.run(["gzip", filename])
+                print('Zipping Back')
+                print(status)
+                print(status.stdout)
                 if status.stderr:
                     error = f"Error while zipping ({filename}) : {status.stderr}"
                     logging.error(error)
