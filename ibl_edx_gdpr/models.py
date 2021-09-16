@@ -3,14 +3,14 @@ import logging
 logging.getLogger(__name__)
 
 class RetirementBackgroundCache(models.Model):
-    old_value = models.Charfield(max_length=255, default='')
-    new_value = models.Charfield(max_length=255, default='')
-    is_final_task = models.BoolenField(default=False)
-    completed = models.BoolenField(default=False)
+    old_value = models.CharField(max_length=255, default='')
+    new_value = models.CharField(max_length=255, default='')
+    is_final_task = models.CharField(default=False)
+    completed = models.CharField(default=False)
 
-    object_id = models.Charfield(max_length=127, default='')
+    object_id = models.CharField(max_length=127, default='')
     error = models.TextField(default='')
-    last_updated = models.DatetimeField(auto_now=True)
+    last_updated = models.CharField(auto_now=True)
 
     def log_error(self, message):
         self.error = message
