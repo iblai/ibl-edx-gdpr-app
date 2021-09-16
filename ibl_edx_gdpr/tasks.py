@@ -37,7 +37,7 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
 
         print(f'Working in {path}')
 
-        files = [f for f in listdir(path) if isfile(join(path, f))]
+        files = [f"{join(path, f)}" for f in listdir(path) if isfile(join(path, f))]
         files.sort()
         files.reverse()
         print(f"Found {files}")
