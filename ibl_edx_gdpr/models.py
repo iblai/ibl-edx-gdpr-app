@@ -10,7 +10,7 @@ class RetirementBackgroundCache(models.Model):
 
     object_id = models.CharField(max_length=127, default='')
     error = models.TextField(default='')
-    last_updated = models.CharField(auto_now=True)
+    last_updated = models.DateTimeField(auto_now=True)
 
     def log_error(self, message):
         self.error = message
