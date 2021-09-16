@@ -1,6 +1,8 @@
 from django.db import models
 import logging
+
 logging.getLogger(__name__)
+
 
 class RetirementBackgroundCache(models.Model):
     old_value = models.CharField(max_length=255, default='')

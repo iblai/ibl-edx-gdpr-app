@@ -6,7 +6,7 @@ import logging
 
 logging.getLogger(__name__)
 
-from ibl_edx_gdpr.config import TRACKING_LOG_PATH
+from ibl_edx_gdpr.config import TRACKING_LOG_PATHS
 from ibl_edx_gdpr.models import RetirementBackgroundCache
 from openedx.core.djangoapps.user_api.models import RetirementState, UserRetirementStatus
 
@@ -31,7 +31,7 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
         object_id=object_id
     )
 
-    for path in TRACKING_LOG_PATH:
+    for path in TRACKING_LOG_PATHS:
         files = [f for f in listdir(path) if isfile(join(path, f))]
         files.sort()
         files.reverse()
