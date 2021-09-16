@@ -125,7 +125,7 @@ class RetirementClient:
     def retire_learner(self, username):
         """
         Retrieves a JWT token as the retirement service learner, then performs the retirement process as
-        defined in WORKING_STATE_ORDER
+        defined in IBL_RETIREMENT_PIPELINE
         """
         learner, learner_state_index = self._get_learner_and_state_index_or_exit(username)
         user_prefix = "({})".format(username)
@@ -163,22 +163,25 @@ class RetirementClient:
             new_data = User.objects.get(pk=old_data.pk)
 
             # Clean user data in tracking logs
-            clean_tracking_logs.delay({
-                'old': old_data.username,
-                'new': new_data.username
+            clean_tracking_logs.delay(**{
+                'old_value': old_data.username,
+                'new_value': new_data.username,
+                'object_id': old_data.pk
             })
-            clean_tracking_logs.delay({
-                'old': old_data.email,
-                'new': new_data.email
+            clean_tracking_logs.delay(**{
+                'old_value': old_data.email,
+                'new_value': new_data.email,
+                'object_id': old_data.pk
+
             })
-            clean_tracking_logs.delay({
-                'old': old_data.get_full_name(),
-                'new': ''
+            clean_tracking_logs.delay(**{
+                'old_value': old_data.get_full_name(),
+                'new_value': '',
+                'object_id': old_data.pk,
+                'final': True
             })
 
-            UserRetirementStatus.objects.filter(original_username=username).update(
-                original_username='', original_name='', original_email=''
-            )
+
         except Exception as exc:  # pylint: disable=broad-except
             exc_msg = _get_error_str_from_exception(exc)
 
