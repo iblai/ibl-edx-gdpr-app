@@ -160,22 +160,22 @@ class RetirementClient:
             self.lms_api.update_learner_retirement_state(username, COMPLETE_STATE, 'Learner retirement complete.')
             LOG('{} Retirement complete for learner {}'.format(user_prefix, username))
 
-            new_data = User.objects.get(pk=old_data.pk)
+            retirement = UserRetirementStatus.objects.get(user=old_data)
 
             # Clean user data in tracking logs
             clean_tracking_logs.delay(**{
-                'old_value': old_data.username,
-                'new_value': new_data.username,
+                'old_value': retirement.user.original_username,
+                'new_value': retirement.user.username,
                 'object_id': old_data.pk
             })
             clean_tracking_logs.delay(**{
-                'old_value': old_data.email,
-                'new_value': new_data.email,
+                'old_value': retirement.original_email,
+                'new_value': retirement.user.email,
                 'object_id': old_data.pk
 
             })
             clean_tracking_logs.delay(**{
-                'old_value': old_data.get_full_name(),
+                'old_value': retirement.original_name,
                 'new_value': '',
                 'object_id': old_data.pk,
                 'final': True
