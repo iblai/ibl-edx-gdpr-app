@@ -28,4 +28,4 @@ urlpatterns = [
 # Activate task to clean their userdata from tracking logs
 # This way it runs just once.
 from .patch import remove_original_values
-remove_original_values()
+# remove_original_values()
