@@ -48,7 +48,6 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
         for filename in files:
             is_zipped = filename.endswith('.gz')
             if is_zipped:
-                filename = filename.strip('.gz')
                 # Unzip it
                 logging.info("IBL_EDPR_GDPR" + f'Unzipping {filename}')
                 status = subprocess.run(["gzip", "-d", filename])
@@ -59,6 +58,8 @@ def clean_tracking_logs(self, old_value, new_value, object_id, final_task=False)
                     logging.error(error)
                     rbc_object.log_error(error)
                     continue
+
+            filename = filename.strip('.gz')
 
             logging.info("IBL_EDPR_GDPR" + f'Replacing {new_value}')
             status = subprocess.run(["sed", "-i", f"s/{old_value}/{new_value}/g", filename])
