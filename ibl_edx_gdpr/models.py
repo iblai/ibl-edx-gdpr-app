@@ -26,6 +26,6 @@ class RetirementBackgroundCache(models.Model):
         logging.getLogger(name)
         # Removing completed tasks only, We can look at tasks that have not completed and attempt to fix later on
         objects = RetirementBackgroundCache.objects.filter(object_id=self.object_id, completed=True)
-        logging.info(f"Found {objects.count()} related completed objects. Deleting...")
+        logging.info(f"IBL_EDX_GDPR: Found {objects.count()} related completed objects. Deleting...")
         objects.delete()
-        logging.info('Deleted')
+        logging.info('IBL_EDX_GDPR: Deleted')
