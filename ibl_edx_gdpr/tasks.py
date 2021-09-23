@@ -14,7 +14,7 @@ import logging
 logging.getLogger(__name__)
 
 
-@task()
+# @task()
 def clean_tracking_logs( old_value, new_value, object_id, final_task=False):
     """
 
