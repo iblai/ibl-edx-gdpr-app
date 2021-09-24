@@ -13,9 +13,11 @@ import logging
 
 logging.getLogger(__name__)
 
+subprocess_options = {'stdout': subprocess.PIPE, 'text': True}
+
 
 # @task()
-def clean_tracking_logs( old_value, new_value, object_id, final_task=False):
+def clean_tracking_logs(old_value, new_value, object_id, final_task=False):
     """
 
     :param self:
@@ -50,7 +52,7 @@ def clean_tracking_logs( old_value, new_value, object_id, final_task=False):
             if is_zipped:
                 # Unzip it
                 logging.info("IBL_EDPR_GDPR" + f'Unzipping {filename}')
-                status = subprocess.run(["gzip", "-d", filename])
+                status = subprocess.run(["gzip", "-d", filename], **subprocess_options )
                 logging.info(f"IBL_EDPR_GDPR: {status}")
                 logging.info(f"IBL_EDPR_GDPR: {status.stdout}")
                 if status.stderr:
@@ -62,7 +64,7 @@ def clean_tracking_logs( old_value, new_value, object_id, final_task=False):
             filename = filename.strip('.gz')
 
             logging.info("IBL_EDPR_GDPR" + f'Replacing {new_value}')
-            status = subprocess.run(["sed", "-i", f"s/{old_value}/{new_value}/g", filename])
+            status = subprocess.run(["sed", "-i", f"s/{old_value}/{new_value}/g", filename], **subprocess_options)
 
             logging.info(f"IBL_EDPR_GDPR: {status}")
             logging.info(f"IBL_EDPR_GDPR: {status.stdout}")
@@ -78,7 +80,7 @@ def clean_tracking_logs( old_value, new_value, object_id, final_task=False):
             # This is a low-impact task, we ignore if it does not zip it again
             if is_zipped:
                 # Return back to zip
-                status = subprocess.run(["gzip", filename])
+                status = subprocess.run(["gzip", filename], **subprocess_options)
                 logging.info("IBL_EDPR_GDPR" + 'Zipping Back')
                 logging.info(f"IBL_EDPR_GDPR: {status}")
                 logging.info(f"IBL_EDPR_GDPR: {status.stdout}")
