@@ -163,18 +163,18 @@ class RetirementClient:
             retirement = UserRetirementStatus.objects.get(user=old_data)
 
             # Clean user data in tracking logs
-            clean_tracking_logs.delay(**{
+            clean_tracking_logs(**{
                 'old_value': retirement.user.original_username,
                 'new_value': retirement.user.username,
                 'object_id': old_data.pk
             })
-            clean_tracking_logs.delay(**{
+            clean_tracking_logs(**{
                 'old_value': retirement.original_email,
                 'new_value': retirement.user.email,
                 'object_id': old_data.pk
 
             })
-            clean_tracking_logs.delay(**{
+            clean_tracking_logs(**{
                 'old_value': retirement.original_name,
                 'new_value': '',
                 'object_id': old_data.pk,
