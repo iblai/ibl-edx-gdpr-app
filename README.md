@@ -9,7 +9,7 @@ git clone --branch koa-tutor-plugin https://gitlab.com/iblstudios/ibl-edx-gdpr.g
 
 #Enter the lms shell 
 tutor local run lms bash
-pip install -e ../requirement/iblstudios/ibl-edx-gdpr
+pip install -e ../requirement/ibl-edx-gdpr
 ```
 
 #### Uninstall
