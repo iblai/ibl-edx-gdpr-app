@@ -49,7 +49,7 @@ pip uninstall ibl_edx_gdpr
     ```
 >>>>>>> 7bcbb0f (plugin update and README.md)
 
-3. `ibl_edx_gdpr` will be added to `INSTALLED_APPS` in `lms/envs/common.py` automatically. 
+4. `ibl_edx_gdpr` will be added to `INSTALLED_APPS` in `lms/envs/common.py` automatically. 
     
     ```python
     INSTALLED_APPS = [
