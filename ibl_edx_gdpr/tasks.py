@@ -36,7 +36,9 @@ def clean_tracking_logs(old_value, new_value, object_id, final_task=False):
         object_id=object_id
     )
     logging.info("IBL_EDPR_GDPR" + f'Starting REPLACE task in directories [{TRACKING_LOG_PATHS}]')
+    user = subprocess.run(["id"], **subprocess_options )
 
+    logging.info( f'Runnning as {user.stdout}')
     for path in TRACKING_LOG_PATHS:
         logging.info("IBL_EDPR_GDPR" + '*' * 15)
 
@@ -53,7 +55,6 @@ def clean_tracking_logs(old_value, new_value, object_id, final_task=False):
                 # Unzip it
                 logging.info("IBL_EDPR_GDPR" + f'Unzipping {filename}')
                 status = subprocess.run(["gzip", "-d", filename], **subprocess_options )
-                logging.info(f"IBL_EDPR_GDPR: {status}")
                 logging.info(f"IBL_EDPR_GDPR: {status.stdout}")
                 if status.stderr:
                     error = f"Error while unzipping, Skipping ({filename}) : {status.stderr}"
@@ -66,7 +67,6 @@ def clean_tracking_logs(old_value, new_value, object_id, final_task=False):
             logging.info("IBL_EDPR_GDPR" + f'Replacing {new_value}')
             status = subprocess.run(["sed", "-i", f"s/{old_value}/{new_value}/g", filename], **subprocess_options)
 
-            logging.info(f"IBL_EDPR_GDPR: {status}")
             logging.info(f"IBL_EDPR_GDPR: {status.stdout}")
             if status.stderr:
                 error = f"Error while replacing values for {new_value} ({filename}) : {status.stderr}"
@@ -82,7 +82,6 @@ def clean_tracking_logs(old_value, new_value, object_id, final_task=False):
                 # Return back to zip
                 status = subprocess.run(["gzip", filename], **subprocess_options)
                 logging.info("IBL_EDPR_GDPR" + 'Zipping Back')
-                logging.info(f"IBL_EDPR_GDPR: {status}")
                 logging.info(f"IBL_EDPR_GDPR: {status.stdout}")
                 if status.stderr:
                     error = f"Error while zipping ({filename}) : {status.stderr}"
