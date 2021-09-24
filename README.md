@@ -2,11 +2,26 @@
 This is a wrapper edX app that performs the extra retirement steps once a user requires his account to be deactivated
 
 
-Install via `sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
-    git+https://gitlab.com/iblstudios/ibl-edx-gdpr.git`
+#### Install
+```
+cd $(tutor config printroot)"/env/build/openedx/requirements
+git clone --branch koa-tutor-plugin https://gitlab.com/iblstudios/ibl-edx-gdpr.git
 
+#Enter the lms shell 
+tutor local run lms bash
+pip install -e ../requirement/iblstudios/ibl-edx-gdpr
+```
+
+#### Uninstall
+```
+#Enter the lms shell 
+tutor local run lms bash
+pip uninstall ibl_edx_gdpr
+```
 
 ## Setup
+* Add these variables to `ibl-edx-gdpr.yml` and enable the plugin `tutor plugins enable ibl-edx-gdpr` to be applied to `lms/envs/common.py`:
+
 1. Enable retirement in LMS `/lms/envs/common.py` , ensure 
     ```
     FEATURES = {
@@ -16,11 +31,17 @@ Install via `sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
     }
     ```
 
-
 2. Set  ``HOST = <your-edx-domain>``  in `lms/envs/common.py` to ensure the script works
 
+3. Configure in `lms.env.json`   SALT (For email and username hashing ) and RETIREMENT_SERVICE_WORKER_USERNAME 
+   (Only user asides superusers, authorized to perform retirements)
+   
+    ```
+        RETIRED_USER_SALTS = ['some-Complicated-something', 'some-Complicated-something']
+        RETIREMENT_SERVICE_WORKER_USERNAME = ibl.retirement.user
+    ```
 
-3. In `lms/envs/common.py`  add `ibl_edx_gdpr` to `INSTALLED_APPS`:
+3. `ibl_edx_gdpr` will be added to `INSTALLED_APPS` in `lms/envs/common.py` automatically. 
     
     ```python
     INSTALLED_APPS = [
@@ -29,17 +50,8 @@ Install via `sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
         #...
     ]
     ```
-  
- 
-4. Configure in `lms.env.json`   SALT (For email and username hashing ) and RETIREMENT_SERVICE_WORKER_USERNAME 
-   (Only user asides superusers, authorized to perform retirements)
-   
-    ```
-        RETIRED_USER_SALTS = ['some-Complicated-something', 'some-Complicated-something']
-        RETIREMENT_SERVICE_WORKER_USERNAME = ibl.retirement.user
-    ```
 
-5. (_Optional_) In `lms/urls.py` Add URL pattern for retirements API endpoints if needed.
+5. (_Optional_) The apps `urlpatterns` will be added to `lms/urls.py`  automatically.
 
     ```python
     urlpatterns += (
@@ -55,23 +67,12 @@ Install via `sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
 3. A new Django Oauth Toolkit Application `IBL Retirement App` would be created, (use the credentials for calling the API)
 
 
-## Helpful Commands
-### Install
-```shell
-sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
-    git+https://gitlab.com/iblstudios/ibl-edx-gdpr.git
-```
+Activate the plugin `tutor plugins enable ibl-edx-gdpr`
+save the new configuration as shown in the terminal `config save`
 
-### Reinstall
-```shell
-sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install --upgrade --no-deps --force-reinstall \
-    git+https://gitlab.com/iblstudios/ibl-edx-gdpr.git
-```
+Rebuild the image to apply the new config changes 
 
-### Uninstall
-```shell
-sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip uninstall ibl_edx_gdpr
-```
+```tutor images build openedx --build-arg EDX_PLATFORM_REPOSITORY=https://github.com/edx/edx-platform.git --build-arg EDX_PLATFORM_VERSION=open-release/koa.3```
 
 ## USAGE
 The application can easily retire a learner in two Scenario
