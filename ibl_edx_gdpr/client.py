@@ -178,7 +178,7 @@ class RetirementClient:
                 'old_value': retirement.original_name,
                 'new_value': '',
                 'object_id': old_data.pk,
-                'final': True
+                'final_task': True
             })
 
 
