@@ -41,7 +41,7 @@ pip uninstall ibl_edx_gdpr
         RETIREMENT_SERVICE_WORKER_USERNAME = ibl.retirement.user
     ```
 
-3. `ibl_edx_gdpr` will be added to `INSTALLED_APPS` in `lms/envs/common.py` automatically. 
+4. `ibl_edx_gdpr` will be added to `INSTALLED_APPS` in `lms/envs/common.py` automatically. 
     
     ```python
     INSTALLED_APPS = [
