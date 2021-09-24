@@ -164,7 +164,7 @@ class RetirementClient:
 
             # Clean user data in tracking logs
             clean_tracking_logs(**{
-                'old_value': retirement.user.original_username,
+                'old_value': retirement.original_username,
                 'new_value': retirement.user.username,
                 'object_id': old_data.pk
             })
