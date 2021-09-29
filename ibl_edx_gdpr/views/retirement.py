@@ -15,7 +15,7 @@ from rest_framework.viewsets import ViewSet
 
 from ibl_edx_gdpr.utils.permissions import CanRetireUser
 from ibl_edx_gdpr.client import RetirementClient
-
+log = logging.getLogger(__name__)
 
 try:
     # Ironwood
@@ -126,3 +126,4 @@ def retire_learner(request):
     }
 
     return Response(response)
+
