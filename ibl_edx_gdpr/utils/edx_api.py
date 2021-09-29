@@ -36,7 +36,10 @@ class BaseApiClient:
         Retrieves OAuth access token from the LMS and creates REST API client instance.
         """
         self.api_base_url = api_base_url
+        LOG.info("BaseApiClient(self.api_base_url)...............")
         access_token, __ = self.get_access_token(lms_base_url, client_id, client_secret)
+        LOG.info("BaseApiClient(access_token).....................")
+        LOG.info(access_token)
         self.create_client(access_token)
 
     def create_client(self, access_token):
