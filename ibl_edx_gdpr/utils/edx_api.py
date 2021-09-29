@@ -37,7 +37,8 @@ class BaseApiClient:
         """
         self.api_base_url = api_base_url
         LOG.info("BaseApiClient(self.api_base_url)...............")
-        access_token, __ = self.get_access_token(lms_base_url, client_id, client_secret)
+        access_token, __ = self.get_access_token(
+            lms_base_url, client_id, client_secret)
         LOG.info("BaseApiClient(access_token).....................")
         LOG.info(access_token)
         self.create_client(access_token)
@@ -62,9 +63,11 @@ class BaseApiClient:
         """
         try:
             LOG.info("get_access_token(try)......................................")
-            return EdxRestApiClient.get_oauth_access_token(
+            edxRestApiClient_qs = EdxRestApiClient.get_oauth_access_token(
                 oauth_base_url + OAUTH_ACCESS_TOKEN_URL, client_id, client_secret, token_type='jwt'
             )
+            LOG.info(edxRestApiClient_qs)
+            return edxRestApiClient_qs
         except HttpClientError as err:
             LOG.error("API Error: {} with status code: {} fetching access token for client: {}".format(
                 err.content,
@@ -78,7 +81,8 @@ def _backoff_handler(details):
     """
     Simple logging handler for when timeout backoff occurs.
     """
-    LOG.info('Trying again in {wait:0.1f} seconds after {tries} tries calling {target}'.format(**details))
+    LOG.info(
+        'Trying again in {wait:0.1f} seconds after {tries} tries calling {target}'.format(**details))
 
 
 def _wait_one_minute():
@@ -108,7 +112,8 @@ def _retry_lms_api():
             # Wrap the actual _backoff_handler so that we can patch the real one in unit tests.  Otherwise, the func
             # will get decorated on import, embedding this handler as a python object reference, precluding our ability
             # to patch it in tests.
-            on_backoff=lambda details: _backoff_handler(details)  # pylint: disable=unnecessary-lambda
+            on_backoff=lambda details: _backoff_handler(
+                details)  # pylint: disable=unnecessary-lambda
         )
         func_with_timeout_backoff = backoff.on_exception(
             _wait_one_minute,
@@ -117,7 +122,8 @@ def _retry_lms_api():
             # Wrap the actual _backoff_handler so that we can patch the real one in unit tests.  Otherwise, the func
             # will get decorated on import, embedding this handler as a python object reference, precluding our ability
             # to patch it in tests.
-            on_backoff=lambda details: _backoff_handler(details)  # pylint: disable=unnecessary-lambda
+            on_backoff=lambda details: _backoff_handler(
+                details)  # pylint: disable=unnecessary-lambda
         )
         return func_with_backoff(func_with_timeout_backoff(func))
     return inner
@@ -148,7 +154,8 @@ def correct_exception(log_404_as_error=True):
             raise err
 
         if hasattr(err, 'content'):
-            LOG.error("API Error: {} with status code: {}".format(err.content, status_code))
+            LOG.error("API Error: {} with status code: {}".format(
+                err.content, status_code))
         else:
             LOG.error("API Error: {} with status code: {} for response without content".format(
                 text_type(err),
@@ -384,7 +391,8 @@ class EcommerceApi(BaseApiClient):
         ecommerce doesn't have access to the LMS user id.
         """
         with correct_exception():
-            result = self._client.api.v2.retirement.tracking_id(learner['original_username']).get()
+            result = self._client.api.v2.retirement.tracking_id(
+                learner['original_username']).get()
             return result['ecommerce_tracking_id']
 
     def replace_usernames(self, username_mappings):
@@ -428,6 +436,7 @@ class DiscoveryApi(BaseApiClient):
     """
     Discovery API client with convenience methods for making API calls.
     """
+
     def replace_usernames(self, username_mappings):
         """
         Calls the discovery API to replace usernames.
