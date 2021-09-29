@@ -61,6 +61,7 @@ class BaseApiClient:
             (str, datetime)
         """
         try:
+            LOG.info("get_access_token(try)......................................")
             return EdxRestApiClient.get_oauth_access_token(
                 oauth_base_url + OAUTH_ACCESS_TOKEN_URL, client_id, client_secret, token_type='jwt'
             )
