@@ -13,7 +13,7 @@ class EdxGDPRConfig(AppConfig):
     plugin_app = {
         PluginURLs.CONFIG: {
             ProjectType.LMS: {
-                PluginURLs.NAMESPACE: 'ibl_catalog_metadata',
+                PluginURLs.NAMESPACE: 'ibl_edx_gdpr',
                 PluginURLs.REGEX: r'^api/ibl/retirements/',
                 PluginURLs.RELATIVE_PATH: 'urls'
             },
