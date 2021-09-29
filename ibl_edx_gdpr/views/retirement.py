@@ -15,7 +15,7 @@ from rest_framework.viewsets import ViewSet
 
 from ibl_edx_gdpr.utils.permissions import CanRetireUser
 from ibl_edx_gdpr.client import RetirementClient
-
+log = logging.getLogger(__name__)
 
 try:
     # Ironwood
@@ -107,9 +107,17 @@ def retire_learner(request):
     :return:
     """
     username = str(request.data.get('username'))
+    log.info("retire_learner(username)............................")
+    log.info(username)
+
     try:
         client = RetirementClient()
+        
+        log.info("retire_learner(client)............................")
+        log.info(client)
+
         client.retire_learner(username)
+
     except Exception as e:
         logger.error("Error processing task ({}): {}".format(username, e.args))
         return Response({'error': 'Failed to retire learner'}, status=400)

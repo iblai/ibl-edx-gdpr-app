@@ -102,8 +102,13 @@ class RetirementClient:
         :return:
         """
         application = get_oauth_app()
+
+        log.info("RetirementClient (application).................................")
+        log.info(application)
+
         LOG('Connecting to {}'.format(self.lms_base_url))
         self.lms_api = LmsApi(self.lms_base_url, self.lms_base_url, application.client_id, application.client_secret)
+        
         log.info("RetirementClient (self.lms_api).................................")
         log.info(self.lms_api)
 
