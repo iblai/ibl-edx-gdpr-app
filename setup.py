@@ -30,5 +30,13 @@ setup(
     install_requires=[
         "backoff==1.5.0",
         "yagocd==0.4.4"
-    ]
+    ],
+    entry_points={
+        'lms.djangoapp': [
+            'ibl_edx_gdpr = ibl_edx_gdpr.apps:EdxGDPRConfig'
+        ],
+        'cms.djangoapp': [
+            'ibl_edx_gdpr = ibl_edx_gdpr.apps:EdxGDPRConfig'
+        ]
+    },
 )
