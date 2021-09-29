@@ -3,7 +3,7 @@ edX API classes which call edX service REST API endpoints using the edx-rest-api
 """
 import logging
 from contextlib import contextmanager
-
+import requests
 import backoff
 from six import text_type
 from slumber.exceptions import HttpClientError, HttpServerError, HttpNotFoundError
@@ -66,6 +66,12 @@ class BaseApiClient:
             LOG.info(oauth_base_url)
             LOG.info(client_id)
             LOG.info(client_secret)
+            LOG.info(oauth_base_url + OAUTH_ACCESS_TOKEN_URL)
+
+            LOG.info("make post request...............................")
+            r = requests.post(str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL), data={'client_id': client_id, 'client_secret': client_secret, 'token_type': 'jwt'})
+            LOG.info(r.status_code, r.reason)
+            LOG.info(r.text)
             edxRestApiClient_qs = EdxRestApiClient.get_oauth_access_token(
                 oauth_base_url + OAUTH_ACCESS_TOKEN_URL, client_id, client_secret, token_type='jwt'
             )
