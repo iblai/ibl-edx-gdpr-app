@@ -9,13 +9,14 @@ from django.contrib.auth.models import User
 import re
 
 from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, COOL_OFF_DAYS, END_STATES, ERROR_STATE, COMPLETE_STATE, \
-    IBL_RETIREMENT_PIPELINE, START_STATE
-from ibl_edx_gdpr.tasks import clean_tracking_logs
+    IBL_RETIREMENT_PIPELINE, START_STATE, IBL_GDPR_LOG_CLEANUP
 from ibl_edx_gdpr.utils.edx_api import LmsApi
 from ibl_edx_gdpr.utils.oauth import get_oauth_app
 
 from django.db import transaction
 from social_django.models import UserSocialAuth
+from eventtracking import tracker
+
 
 if RELEASE_LINE == 'ironwood':
     from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
@@ -162,25 +163,19 @@ class RetirementClient:
 
             retirement = UserRetirementStatus.objects.get(user=old_data)
 
-            # Clean user data in tracking logs
-            clean_tracking_logs(**{
-                'old_value': retirement.original_username,
-                'new_value': retirement.user.username,
-                'object_id': old_data.pk
-            })
-            clean_tracking_logs(**{
-                'old_value': retirement.original_email,
-                'new_value': retirement.user.email,
-                'object_id': old_data.pk
+            # Emit event to help ibl-edx-log-cleanup to run
+            event_dict = {
+                retirement.original_username: retirement.user.username,
+                retirement.original_email: retirement.user.email,
+                retirement.original_name: ""
+            }
+            tracker.emit(IBL_GDPR_LOG_CLEANUP, event_dict)
 
-            })
-            clean_tracking_logs(**{
-                'old_value': retirement.original_name,
-                'new_value': '',
-                'object_id': old_data.pk,
-                'final_task': True
-            })
-
+            # Remove original username and email after
+            retirement.original_username = ''
+            retirement.original_email = ''
+            retirement.original_name = ''
+            retirement.save()
 
         except Exception as exc:  # pylint: disable=broad-except
             exc_msg = _get_error_str_from_exception(exc)
