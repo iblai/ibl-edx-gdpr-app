@@ -69,8 +69,9 @@ class BaseApiClient:
             LOG.info(oauth_base_url + OAUTH_ACCESS_TOKEN_URL)
 
             LOG.info("make post request...............................")
-            r = requests.post(str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL), data={'client_id': client_id, 'client_secret': client_secret, 'token_type': 'jwt'})
-            LOG.info(r.status_code, r.reason)
+            r = requests.post(str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL), data={'client_id': client_id, 'client_secret': client_secret, 'grant_type': 'client_credentials'})
+            LOG.info(r.status_code)
+            LOG.info(r.reason)
             LOG.info(r.text)
             edxRestApiClient_qs = EdxRestApiClient.get_oauth_access_token(
                 oauth_base_url + OAUTH_ACCESS_TOKEN_URL, client_id, client_secret, token_type='jwt'
