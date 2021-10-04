@@ -66,10 +66,13 @@ class BaseApiClient:
             LOG.info(oauth_base_url)
             LOG.info(client_id)
             LOG.info(client_secret)
-            LOG.info(oauth_base_url + OAUTH_ACCESS_TOKEN_URL)
-
+            # LOG.info(oauth_base_url + OAUTH_ACCESS_TOKEN_URL)
+            url = str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL)
+            LOG.info(url)
+            request_data = {'client_id': client_id, 'client_secret': client_secret, 'token_type': 'jwt'}
+            LOG.info(request_data)
             LOG.info("make post request...............................")
-            r = requests.post(str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL), data={'client_id': client_id, 'client_secret': client_secret, 'grant_type': 'client_credentials'})
+            r = requests.post(url, data=request_data)
             LOG.info(r.status_code)
             LOG.info(r.reason)
             LOG.info(r.text)
