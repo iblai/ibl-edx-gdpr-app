@@ -74,10 +74,8 @@ class BaseApiClient:
                 LOG.info(r.status_code)
                 LOG.info(r.reason)
                 LOG.info(r.text)
-            except requests.exceptions.ConnectionError:
-                LOG.info(str(r.status_code))
-                r.status_code = "Connection refused"
-                LOG.info(str(r.status_code))
+            except requests.exceptions.ConnectionError as e:
+                LOG.info(str(e))
             
 
             edxRestApiClient_qs = EdxRestApiClient.get_oauth_access_token(
