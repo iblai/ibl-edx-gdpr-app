@@ -62,8 +62,7 @@ def clean_url(url):
     result = re.findall('https?://|http?://|([A-Za-z_0-9.-]+).*', url)
     if not result:
         raise ValueError('Kindly supply a valid HOST value for IBL Retirement app')
-    connection_mode = 'https' if USE_HTTPS else 'http'
-    return "{}://{}".format( connection_mode, result.pop())
+    return "http://{}".format(result.pop())
 
 
 def _get_learner_state_index_or_exit(learner):
