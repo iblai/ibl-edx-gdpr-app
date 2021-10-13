@@ -63,24 +63,13 @@ class BaseApiClient:
         """
         try:
             LOG.info("get_access_token(try)......................................")
-            
-            # try:
-            #     url = str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL)
-            #     LOG.info(url)
-            #     request_data = {'client_id': client_id, 'client_secret': client_secret, 'token_type': 'jwt'}
-            #     LOG.info(request_data)
-            #     LOG.info("make post request...............................")
-            #     r = requests.post(url, data=request_data)
-            #     LOG.info(r.status_code)
-            #     LOG.info(r.reason)
-            #     LOG.info(r.text)
-            # except requests.exceptions.ConnectionError as e:
-            #     LOG.info(str(e))
-            
 
             edxRestApiClient_qs = EdxRestApiClient.get_oauth_access_token(
-                oauth_base_url + OAUTH_ACCESS_TOKEN_URL, client_id, client_secret, token_type='jwt'
+                "koa-devlms.socialgoodplatform.com" + OAUTH_ACCESS_TOKEN_URL, client_id, client_secret, token_type='jwt'
             )
+            # edxRestApiClient_qs = EdxRestApiClient.get_oauth_access_token(
+            #     oauth_base_url + OAUTH_ACCESS_TOKEN_URL, client_id, client_secret, token_type='jwt'
+            # )
             LOG.info(edxRestApiClient_qs)
             return edxRestApiClient_qs
         except HttpClientError as err:
