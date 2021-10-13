@@ -64,18 +64,18 @@ class BaseApiClient:
         try:
             LOG.info("get_access_token(try)......................................")
             
-            try:
-                url = str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL)
-                LOG.info(url)
-                request_data = {'client_id': client_id, 'client_secret': client_secret, 'token_type': 'jwt'}
-                LOG.info(request_data)
-                LOG.info("make post request...............................")
-                r = requests.post(url, data=request_data)
-                LOG.info(r.status_code)
-                LOG.info(r.reason)
-                LOG.info(r.text)
-            except requests.exceptions.ConnectionError as e:
-                LOG.info(str(e))
+            # try:
+            #     url = str(oauth_base_url) + str(OAUTH_ACCESS_TOKEN_URL)
+            #     LOG.info(url)
+            #     request_data = {'client_id': client_id, 'client_secret': client_secret, 'token_type': 'jwt'}
+            #     LOG.info(request_data)
+            #     LOG.info("make post request...............................")
+            #     r = requests.post(url, data=request_data)
+            #     LOG.info(r.status_code)
+            #     LOG.info(r.reason)
+            #     LOG.info(r.text)
+            # except requests.exceptions.ConnectionError as e:
+            #     LOG.info(str(e))
             
 
             edxRestApiClient_qs = EdxRestApiClient.get_oauth_access_token(
