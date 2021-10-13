@@ -17,8 +17,10 @@ Install via `sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
     ```
 
 
-2. Set  ``HOST = <your-edx-domain>``  in `lms/envs/common.py` to ensure the script works
-
+2. Set ``HOST = <your-edx-domain>``  in `lms/envs/common.py` to ensure the script works
+    - Optional settings
+    
+        `IBL_GDPR_USE_HTTPS=False/True <either to connect to HOST using https or http>` 
 
 3. In `lms/envs/common.py`  add `ibl_edx_gdpr` to `INSTALLED_APPS`:
     
@@ -134,6 +136,9 @@ authenticate with the API
 2. Learner Retirement: Learner retire2@retire.com not found. Please check that the learner is present in UserRetirementStatus, is not already retired, and is in an appropriate state to be acted upon.
     * Run the `ìbl_retire_user` command passing the username and email as params
 
+3. Connection Refused 
+    * Check if the current can access the url set in ``HOST``
+    * Turn off HTTPS by setting `IBL_GDPR_USE_HTTPS` to `False`
 
 ## Process Flow
 ![img_1.png](img_1.png)
