@@ -62,3 +62,6 @@ IBL_RETIREMENT_EMAIL = '{}@ibleducation.com'.format(IBL_RETIREMENT_SERVICE_WORKE
 EDX_USER_PROFILE_CHANGED = 'edx.user.settings.changed'
 EMIT_EVENTS = bool(getattr(settings, 'IBL_GDPR_EMIT_EVENTS', True))
 IBL_GDPR_LOG_CLEANUP = 'ibl.gdpr.log.cleanup'
+
+# Connection mode
+USE_HTTPS=bool(getattr(settings, 'IBL_GDPR_USE_HTTPS', True))

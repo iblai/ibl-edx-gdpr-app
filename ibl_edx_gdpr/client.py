@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 import re
 
 from ibl_edx_gdpr.config import IBL_RETIREMENT_STATES, COOL_OFF_DAYS, END_STATES, ERROR_STATE, COMPLETE_STATE, \
-    IBL_RETIREMENT_PIPELINE, START_STATE, IBL_GDPR_LOG_CLEANUP
+    IBL_RETIREMENT_PIPELINE, START_STATE, IBL_GDPR_LOG_CLEANUP, USE_HTTPS
 from ibl_edx_gdpr.utils.edx_api import LmsApi
 from ibl_edx_gdpr.utils.oauth import get_oauth_app
 
@@ -58,7 +58,8 @@ def clean_url(url):
     result = re.findall('https?://|http?://|([A-Za-z_0-9.-]+).*', url)
     if not result:
         raise ValueError('Kindly supply a valid HOST value for IBL Retirement app')
-    return "https://{}".format(result.pop())
+    connection_mode = 'https' if USE_HTTPS else 'http'
+    return "{}://{}".format( connection_mode, result.pop())
 
 
 def _get_learner_state_index_or_exit(learner):
