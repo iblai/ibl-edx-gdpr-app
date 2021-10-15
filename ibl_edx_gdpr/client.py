@@ -177,6 +177,7 @@ class RetirementClient:
             retirement.original_email = ''
             retirement.original_name = ''
             retirement.save()
+            return event_dict
 
         except Exception as exc:  # pylint: disable=broad-except
             exc_msg = _get_error_str_from_exception(exc)

@@ -8,5 +8,6 @@ class CanRetireUser(permissions.BasePermission):
     retire a User account.
     """
     def has_permission(self, request, view):
-        return request.user.username == getattr(settings, 'RETIREMENT_SERVICE_WORKER_USERNAME', False)
+        # Allow superusers/staffs to perform actions
+        return (request.user.username == getattr(settings, 'RETIREMENT_SERVICE_WORKER_USERNAME', False)) or request.user.is_superuser or request.user.is_staff
 

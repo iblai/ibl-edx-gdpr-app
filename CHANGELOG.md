@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 15 OCT 2021
+- Passed changes made to the response sent out after a retirement is completed
+- Ensured a ibl.retirement.user and superusers/staffs can call the API
+
 ### 13 OCT 2021
 - Connect to lms host using either HTTPS or HTTP
 

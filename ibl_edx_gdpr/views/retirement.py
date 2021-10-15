@@ -109,9 +109,12 @@ def retire_learner(request):
     username = str(request.data.get('username'))
     try:
         client = RetirementClient()
-        client.retire_learner(username)
+        result = client.retire_learner(username)
     except Exception as e:
         logger.error("Error processing task ({}): {}".format(username, e.args))
         return Response({'error': 'Failed to retire learner'}, status=400)
-
-    return Response({'message': '{} retired successfully'.format(username)})
+    response = {
+        'message': '{} retired successfully'.format(username),
+        'changes': result
+    }
+    return Response(response)
