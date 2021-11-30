@@ -4,7 +4,7 @@ patches:
   lms-env-features: |
     "ACCOUNT_DELETION": True
   lms-env: |
-    "RETIRED_USER_SALTS" : "['some-Complicated-something', 'some-Complicated-something']",
+    "RETIRED_USER_SALTS" : ['some-Complicated-something', 'some-Complicated-something'],
     "RETIREMENT_SERVICE_WORKER_USERNAME" : "ibl.retirement.user"
   openedx-lms-common-settings: |
     HOST = "koa-devlms.socialgoodplatform.com"
