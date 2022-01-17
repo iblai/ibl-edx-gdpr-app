@@ -20,7 +20,7 @@ else:
 
 setup(
     name='ibl_edx_gdpr',
-    version='1.0.3',
+    version='1.3.4',
     description='IBL EDX GDPR API',
     author='IBL',
     author_email='info@ibleducation.com',
@@ -30,5 +30,13 @@ setup(
     install_requires=[
         "backoff==1.5.0",
         "yagocd==0.4.4"
-    ]
+    ],
+    entry_points={
+        'lms.djangoapp': [
+            'ibl_edx_gdpr = ibl_edx_gdpr.apps:EdxGDPRConfig'
+        ],
+        'cms.djangoapp': [
+            'ibl_edx_gdpr = ibl_edx_gdpr.apps:EdxGDPRConfig'
+        ]
+    },
 )
