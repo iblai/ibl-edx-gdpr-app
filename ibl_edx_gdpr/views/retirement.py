@@ -83,6 +83,8 @@ def place_learner_in_retirement_pipeline(request):
     """
     try:
         username = str(request.data.get('username'))
+        logger.info("place_learner_in_retirement_pipeline (username)........................")
+        logger.info(username)
         client = RetirementClient()
         client.place_in_retirement_pipeline(username)
 
