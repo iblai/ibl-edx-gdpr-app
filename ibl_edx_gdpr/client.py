@@ -16,7 +16,9 @@ from ibl_edx_gdpr.utils.oauth import get_oauth_app
 from django.db import transaction
 from social_django.models import UserSocialAuth
 from eventtracking import tracker
+import logging
 
+log = logging.getLogger(__name__)
 
 if RELEASE_LINE == 'ironwood':
     from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
@@ -58,8 +60,7 @@ def clean_url(url):
     result = re.findall('https?://|http?://|([A-Za-z_0-9.-]+).*', url)
     if not result:
         raise ValueError('Kindly supply a valid HOST value for IBL Retirement app')
-    connection_mode = 'https' if USE_HTTPS else 'http'
-    return "{}://{}".format( connection_mode, result.pop())
+    return "http://{}".format(result.pop())
 
 
 def _get_learner_state_index_or_exit(learner):
@@ -87,6 +88,8 @@ def _get_learner_state_index_or_exit(learner):
 
 class RetirementClient:
     lms_base_url = clean_url(getattr(settings, 'HOST', 'lms.lenovo.com'))
+    log.info("RetirementClient (lms_base_url).................................")
+    log.info(lms_base_url)
     lms_api = None
 
     def __init__(self):
@@ -98,8 +101,15 @@ class RetirementClient:
         :return:
         """
         application = get_oauth_app()
+
+        log.info("RetirementClient (application).................................")
+        log.info(application)
+
         LOG('Connecting to {}'.format(self.lms_base_url))
         self.lms_api = LmsApi(self.lms_base_url, self.lms_base_url, application.client_id, application.client_secret)
+        
+        log.info("RetirementClient (self.lms_api).................................")
+        log.info(self.lms_api)
 
     def get_learners_to_retire(self, cool_off_days=COOL_OFF_DAYS):
         """
