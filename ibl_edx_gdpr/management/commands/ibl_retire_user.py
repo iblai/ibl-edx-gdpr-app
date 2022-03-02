@@ -1,6 +1,7 @@
 import logging
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.models import User
+from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand, CommandError
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,8 @@ class Command(BaseCommand):
             error_message = 'The user "{}" does not exist.'.format(user.username)
             logger.error(error_message)
             raise CommandError(error_message)
+        except ImproperlyConfigured as e:
+            raise e
         except Exception as exc:  # pylint: disable=broad-except
             error_message = '500 error deactivating account {}'.format(exc)
             logger.error(error_message)

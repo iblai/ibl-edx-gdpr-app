@@ -1,5 +1,8 @@
 # CHANGELOG
 
+### 3 Mar 2022
+- Raises `ImproperlyConfigured` error when `ibl_retirement_states.py` has not been run on installation
+- Removed auto-configure states from the apps.ready()
 ### 15 OCT 2021
 - Passed changes made to the response sent out after a retirement is completed
 - Ensured a ibl.retirement.user and superusers/staffs can call the API

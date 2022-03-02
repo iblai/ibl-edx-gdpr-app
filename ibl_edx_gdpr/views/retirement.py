@@ -65,6 +65,7 @@ def get_learners_in_retirement_pipeline(request):
     try:
         client = RetirementClient()
         usernames = client.get_learners_to_retire_usernames()
+
     except Exception as e:
         logger.error("Error processing task {}".format(e.args))
         return Response({'error': 'Failed to fetch retirements'}, status=400)

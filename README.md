@@ -48,8 +48,11 @@ Install via `sudo -Hu edxapp /edx/app/edxapp/venvs/edxapp/bin/pip install \
         url(r'^api/ibl/retirements/', include('ibl_edx_gdpr.urls')),
     )
     ```
-
-6. Restart the lms
+6. Import retirement states
+```
+./manage.py lms ibl_retirement_states
+```
+7. Restart the lms
 
 **NOTE**: After these steps are done, 
 1. Retirement States Model would be automatically populated with the right RETIREMENT_STATES

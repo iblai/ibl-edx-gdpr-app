@@ -1,5 +1,7 @@
 import os
 from functools import partial
+
+from django.core.exceptions import ImproperlyConfigured
 from openedx.core.release import RELEASE_LINE
 from time import time
 from slumber.exceptions import HttpNotFoundError
@@ -90,6 +92,10 @@ class RetirementClient:
     lms_api = None
 
     def __init__(self):
+        from openedx.core.djangoapps.user_api.models import RetirementState
+        if not RetirementState.objects.all().count():
+            message = 'Retirement states not populated, run manage.py lms ibl_retirement_states to populate'
+            raise ImproperlyConfigured(message)
         self.setup_api()
 
     def setup_api(self):
