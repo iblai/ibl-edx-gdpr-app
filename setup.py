@@ -20,11 +20,7 @@ else:
 
 setup(
     name='ibl_edx_gdpr',
-<<<<<<< HEAD
-    version='1.3.3',
-=======
     version='1.3.4',
->>>>>>> 4c7de17 (Dev koa tutor plugin)
     description='IBL EDX GDPR API',
     author='IBL',
     author_email='info@ibleducation.com',
