@@ -112,12 +112,20 @@ def retire_learner(request):
     username = str(request.data.get('username'))
     try:
         client = RetirementClient()
+<<<<<<< HEAD
         result = client.retire_learner(username)
     except User.profile.RelatedObjectDoesNotExist as e:
         response = {
             'message': '{} retired successfully'.format(username),
         }
         return Response(response)
+=======
+        
+        log.info("retire_learner(client)............................")
+        log.info(client)
+
+        client.retire_learner(username)
+>>>>>>> d86cecf (gdpr to handle http | https base urls)
 
     except Exception as e:
         logger.error("Error processing task ({}): {}".format(username, e.args))
