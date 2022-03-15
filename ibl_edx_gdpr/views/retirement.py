@@ -1,7 +1,7 @@
 from functools import wraps
 import logging
 from django.contrib.auth.models import User
-
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
@@ -111,6 +111,12 @@ def retire_learner(request):
     try:
         client = RetirementClient()
         result = client.retire_learner(username)
+    except User.profile.RelatedObjectDoesNotExist as e:
+        response = {
+            'message': '{} retired successfully'.format(username),
+        }
+        return Response(response)
+
     except Exception as e:
         logger.error("Error processing task ({}): {}".format(username, e.args))
         return Response({'error': 'Failed to retire learner'}, status=400)
@@ -118,4 +124,5 @@ def retire_learner(request):
         'message': '{} retired successfully'.format(username),
         'changes': result
     }
+
     return Response(response)
