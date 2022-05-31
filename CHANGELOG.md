@@ -1,6 +1,9 @@
 # CHANGELOG
 
 ### 3 Mar 2022
+- Replaces the `ibl.retirement.user` creation to use the edX `manage_user` interface instead
+
+### 3 Mar 2022
 - Raises `ImproperlyConfigured` error when `ibl_retirement_states.py` has not been run on installation
 - Removed auto-configure states from the apps.ready()
 ### 15 OCT 2021

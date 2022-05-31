@@ -18,5 +18,3 @@ class EdxGDPRConfig(AppConfig):
         if not RetirementState.objects.all().count():
             message = 'ImproperlyConfigured: Retirement states not populated, run manage.py lms ibl_retirement_states to populate'
             logging.error(message)
-            print(message)
-

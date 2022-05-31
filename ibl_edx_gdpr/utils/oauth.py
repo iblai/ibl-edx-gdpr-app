@@ -7,8 +7,14 @@ Application = get_application_model()
 
 
 def create_oauth_app():
-    user, user_created = User.objects.get_or_create(username=IBL_RETIREMENT_SERVICE_WORKER,
-                                                    email=IBL_RETIREMENT_EMAIL)
+    from django.core.management import call_command, CommandError
+    try:
+        call_command('lms', "manage_user", IBL_RETIREMENT_SERVICE_WORKER,
+                     IBL_RETIREMENT_EMAIL, staff=True, superuser=True)
+    except CommandError:
+        raise Exception('Create retirement user failed')
+
+    user = User.objects.get(username=IBL_RETIREMENT_SERVICE_WORKER)
     application_kwargs = dict(
         redirect_uris='',
         client_type=Application.CLIENT_CONFIDENTIAL,
@@ -39,6 +45,3 @@ def get_oauth_app():
         user=user
     )
     return application
-
-
-
