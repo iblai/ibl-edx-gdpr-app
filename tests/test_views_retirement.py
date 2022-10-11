@@ -1,5 +1,3 @@
-import json
-
 import pytest
 from common.djangoapps.student.tests.factories import UserFactory
 from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
@@ -12,7 +10,6 @@ from .utils import (
     get_authenticated_client_and_user,
     get_place_in_retirement_resp,
     requests_mock_token,
-    reverse,
     setup,
 )
 
@@ -41,7 +38,6 @@ class TestViewsRetirement:
         if SetupStatus.value is False:
             setup()
         requests_mock_token(requests_mock)
-
         user = UserFactory()
         client, _ = get_authenticated_client_and_user(user=self.staff)
         data = {
@@ -61,7 +57,6 @@ class TestViewsRetirement:
         if SetupStatus.value is False:
             setup()
         requests_mock_token(requests_mock)
-
         user = UserFactory()
         client, _ = get_authenticated_client_and_user(user=self.staff)
         data = {
