@@ -1,4 +1,5 @@
 from common.djangoapps.student.tests.factories import UserFactory
+from django.core.management import call_command
 from django.shortcuts import reverse as django_reverse
 from rest_framework.test import APIClient
 
@@ -23,6 +24,4 @@ def reverse(name, args=None, kwargs=None):
 
 
 def setup():
-    from ibl_edx_gdpr.management.commands.ibl_retirement_states import Command
-
-    Command().handle()
+    call_command("lms", "ibl_retirement_states")
