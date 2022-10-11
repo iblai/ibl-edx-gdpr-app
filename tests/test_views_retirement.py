@@ -5,11 +5,14 @@ from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
     ApplicationFactory,
 )
 
-from .utils import get_authenticated_client_and_user, reverse
+from .utils import get_authenticated_client_and_user, reverse, setup
 
 
 @pytest.mark.django_db
 class TestViewsRetirement:
+    def __init__(self):
+        setup()
+
     @property
     def staff(self):
         if hasattr(self, "_staff") is False:

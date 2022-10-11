@@ -20,3 +20,9 @@ def reverse(name, args=None, kwargs=None):
     if kwargs is None:
         kwargs = []
     return django_reverse(f"ibl_edx_gdpr:{name}", args=args, kwargs=kwargs)
+
+
+def setup():
+    from ibl_edx_gdpr.management.commands.ibl_retirement_states import Command
+
+    Command().handle()
