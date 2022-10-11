@@ -24,4 +24,4 @@ def reverse(name, args=None, kwargs=None):
 
 
 def setup():
-    call_command("lms", "ibl_retirement_states")
+    call_command("ibl_retirement_states")
