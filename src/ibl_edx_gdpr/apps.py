@@ -36,7 +36,9 @@ class EdxGDPRConfig(AppConfig):
         enable_retirement_signal()
 
         from openedx.core.djangoapps.user_api.models import RetirementState
-
-        if not RetirementState.objects.all().count():
-            message = 'ImproperlyConfigured: Retirement states not populated, run manage.py lms ibl_retirement_states to populate'
-            logging.error(message)
+        try:
+            if not RetirementState.objects.all().count():
+                message = 'ImproperlyConfigured: Retirement states not populated, run manage.py lms ibl_retirement_states to populate'
+                logging.error(message)
+        except Exception as e:
+            logging.error("Some error happened while counting retirement states...")
