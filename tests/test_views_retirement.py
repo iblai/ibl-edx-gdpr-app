@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from common.djangoapps.student.tests.factories import UserFactory
 from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
@@ -5,13 +7,9 @@ from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
     ApplicationFactory,
 )
 
-from .utils import (
-    SetupStatus,
-    get_authenticated_client_and_user,
-    get_place_in_retirement_resp,
-    requests_mock_token,
-    setup,
-)
+from .utils import get_authenticated_client_and_user, reverse, setup
+
+LMS_HOST = "lms.lenovo.com"
 
 
 @pytest.mark.django_db
@@ -35,36 +33,32 @@ class TestViewsRetirement:
         ).token
 
     def test_place_learner_in_retirement_pipeline_returns_200(self, requests_mock):
-        if SetupStatus.value is False:
-            setup()
-        requests_mock_token(requests_mock)
+        setup()
+        requests_mock.post(
+            f"https://{LMS_HOST}/oauth2/access_token",
+            text=json.dumps(
+                {
+                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
+                    "expires_in": 3600,
+                    "token_type": "bearer",
+                    "scope": "read write",
+                }
+            ),
+        )
         user = UserFactory()
         client, _ = get_authenticated_client_and_user(user=self.staff)
         data = {
             "username": user.username,
         }
 
-        resp = get_place_in_retirement_resp(client, data, self.token)
+        resp = client.post(
+            reverse("ibl_edx_gdpr_place_in_retirements"),
+            data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
 
         assert resp.status_code == 200
         assert resp.data["message"] == "{} added to retirements successfully".format(
             user.username
         )
-
-    def test_place_learner_in_retirement_pipeline_multiple_times_returns_400(
-        self, requests_mock
-    ):
-        if SetupStatus.value is False:
-            setup()
-        requests_mock_token(requests_mock)
-        user = UserFactory()
-        client, _ = get_authenticated_client_and_user(user=self.staff)
-        data = {
-            "username": user.username,
-        }
-
-        get_place_in_retirement_resp(client, data, self.token)
-        resp = get_place_in_retirement_resp(client, data, self.token)
-
-        assert resp.status_code == 400
-        assert resp.data["error"] == "Failed to place in retirements"
