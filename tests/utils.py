@@ -25,3 +25,8 @@ def reverse(name, args=None, kwargs=None):
 
 def setup():
     call_command("ibl_retirement_states")
+    SetupStatus.value = True
+
+
+class SetupStatus:
+    value = False

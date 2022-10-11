@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from common.djangoapps.student.tests.factories import UserFactory
 from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
@@ -5,7 +7,9 @@ from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
     ApplicationFactory,
 )
 
-from .utils import get_authenticated_client_and_user, reverse, setup
+from .utils import SetupStatus, get_authenticated_client_and_user, reverse, setup
+
+LMS_HOST = "lms.lenovo.com"
 
 
 @pytest.mark.django_db
@@ -28,8 +32,21 @@ class TestViewsRetirement:
             user=self.staff, application=self.application
         ).token
 
-    def test_place_learner_in_retirement_pipeline_returns_200(self):
-        setup()
+    def test_place_learner_in_retirement_pipeline_returns_200(self, requests_mock):
+        if SetupStatus.value is False:
+            setup()
+
+        requests_mock.post(
+            f"https://{LMS_HOST}/oauth2/access_token",
+            text=json.dumps(
+                {
+                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
+                    "expires_in": 3600,
+                    "token_type": "bearer",
+                    "scope": "read write",
+                }
+            ),
+        )
         user = UserFactory()
         client, _ = get_authenticated_client_and_user(user=self.staff)
         data = {
@@ -49,4 +66,5 @@ class TestViewsRetirement:
         )
 
     def test_place_learner_in_retirement_pipeline_multiple_times_returns_400(self):
-        ...
+        if SetupStatus.value is False:
+            setup()
