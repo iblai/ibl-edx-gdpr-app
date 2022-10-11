@@ -10,9 +10,6 @@ from .utils import get_authenticated_client_and_user, reverse, setup
 
 @pytest.mark.django_db
 class TestViewsRetirement:
-    def __init__(self):
-        setup()
-
     @property
     def staff(self):
         if hasattr(self, "_staff") is False:
@@ -32,6 +29,7 @@ class TestViewsRetirement:
         ).token
 
     def test_place_learner_in_retirement_pipeline_returns_200(self):
+        setup()
         user = UserFactory()
         client, _ = get_authenticated_client_and_user(user=self.staff)
         data = {
