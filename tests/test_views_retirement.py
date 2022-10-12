@@ -102,7 +102,7 @@ class TestViewsRetirement:
         user = UserFactory()
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
-        client, _ = get_authenticated_client_and_user(self.staff)
+        client, _ = get_authenticated_client_and_user(user=self.staff)
 
         resp = client.post(reverse("ibl_edx_gdpr_retire_learner"), data, format="json")
 
