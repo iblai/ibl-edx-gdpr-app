@@ -139,4 +139,5 @@ class TestViewsRetirement:
         resp = client.post(reverse("ibl_edx_gdpr_retire_learner"), data, format="json")
 
         assert resp.status_code == 200
-        assert resp.data == 1
+        assert resp.data["message"] == f"{user.username} retired successfully"
+        assert resp.data["changes"] == {user.username: user.username, user.email: user.email, user.get_full_name(): ''}
