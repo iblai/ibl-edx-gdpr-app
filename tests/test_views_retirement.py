@@ -113,16 +113,18 @@ class TestViewsRetirement:
         user = UserFactory()
         requests_mock.get(
             f"https://{LMS_HOST}/api/user/v1/accounts/{user.username}/retirement_status/",
-            text=json.dumps({
-                "current_state": {"state_name": "PENDING"},
-                "original_username": user.username,
-            }),
+            text=json.dumps(
+                {
+                    "current_state": {"state_name": "PENDING"},
+                    "original_username": user.username,
+                }
+            ),
         )
         requests_mock.patch(
             f"https://{LMS_HOST}/api/user/v1/accounts/update_retirement_status/",
-            text='{}'
+            text="{}",
         )
-        requests_mock.post(f"https://{LMS_HOST}/api/enrollment/v1/unenroll/", text={})
+        requests_mock.post(f"https://{LMS_HOST}/api/enrollment/v1/unenroll/", text="{}")
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
         client, _ = get_authenticated_client_and_user(user=self.staff)
