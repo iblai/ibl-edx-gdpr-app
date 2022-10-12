@@ -104,4 +104,6 @@ class TestViewsRetirement:
         )
 
         assert resp.status_code == 200
-        assert resp.data["message"] == 1
+        message = resp.data["message"]
+        for username in message:
+            assert username in usernames
