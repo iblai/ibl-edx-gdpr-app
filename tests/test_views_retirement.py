@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from common.djangoapps.student.tests.factories import UserFactory
+from common.djangoapps.student.tests.factories import UserFactory, UserProfileFactory
 from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
     AccessTokenFactory,
     ApplicationFactory,
@@ -96,3 +96,18 @@ class TestViewsRetirement:
         message = resp.data["message"]
         for username in message:
             assert username in usernames
+
+    def test_retire_user_with_profile_returns_200(self):
+        setup()
+        user = UserFactory()
+        data = {"username": user.username}
+        UserProfileFactory.create(user=user)
+        client, _ = get_authenticated_client_and_user(self.staff)
+
+        resp = client.post(reverse("ibl_edx_gdpr_retire_learner"), data, format="json")
+
+        assert resp.status_code == 200
+        assert resp.data == 1
+
+    def test_retire_user_no_profile_returns_200(self):
+        setup()
