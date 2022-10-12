@@ -114,7 +114,7 @@ class TestViewsRetirement:
         requests_mock.get(
             f"https://{LMS_HOST}/api/user/v1/accounts/{user.username}/retirement_status/",
             text=json.dumps({
-                "current_state": {"state_name": "RETIRING_ENROLLMENTS"},
+                "current_state": {"state_name": "PENDING"},
                 "original_username": user.username,
             }),
         )
