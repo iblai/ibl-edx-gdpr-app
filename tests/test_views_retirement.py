@@ -122,6 +122,7 @@ class TestViewsRetirement:
             f"https://{LMS_HOST}/api/user/v1/accounts/update_retirement_status/",
             text='{}'
         )
+        requests_mock.post(f"https://{LMS_HOST}/api/enrollment/v1/unenroll/", text={})
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
         client, _ = get_authenticated_client_and_user(user=self.staff)
@@ -130,17 +131,3 @@ class TestViewsRetirement:
 
         assert resp.status_code == 200
         assert resp.data == 1
-
-    def test_retire_user_no_profile_returns_200(self, requests_mock):
-        setup()
-        requests_mock.post(
-            f"https://{LMS_HOST}/oauth2/access_token",
-            text=json.dumps(
-                {
-                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
-                    "expires_in": 3600,
-                    "token_type": "bearer",
-                    "scope": "read write",
-                }
-            ),
-        )
