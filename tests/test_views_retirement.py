@@ -2,6 +2,7 @@ import json
 
 import pytest
 from common.djangoapps.student.tests.factories import UserFactory, UserProfileFactory
+from django.apps import apps
 from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
     AccessTokenFactory,
     ApplicationFactory,
@@ -125,9 +126,14 @@ class TestViewsRetirement:
             text="{}",
         )
         requests_mock.post(f"https://{LMS_HOST}/api/enrollment/v1/unenroll/", text="{}")
-        requests_mock.post(f"https://{LMS_HOST}/api/user/v1/accounts/retire/", text="{}")
+        requests_mock.post(
+            f"https://{LMS_HOST}/api/user/v1/accounts/retire/", text="{}"
+        )
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
+        UserRetirementStatus = apps.get_model("user_api", "UserRetirementStatus")
+        status = UserRetirementStatus.create_retirement(user)
+        status.save()
         client, _ = get_authenticated_client_and_user(user=self.staff)
 
         resp = client.post(reverse("ibl_edx_gdpr_retire_learner"), data, format="json")
