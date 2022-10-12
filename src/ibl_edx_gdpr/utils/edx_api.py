@@ -290,6 +290,10 @@ class LmsApi(BaseApiClient):
         Deletes, blanks, or one-way hashes personal information in LMS as
         defined in EDUCATOR-2802 and sub-tasks.
         """
+        if isinstance(learner, bytes):
+            learner = str(learner, 'utf-8')
+        if isinstance(learner, str):
+            learner = json.loads(learner)
         params = {'data': {'username': learner['original_username']}}
         with correct_exception():
             return self._client.api.user.v1.accounts.retire_misc.post(**params)
