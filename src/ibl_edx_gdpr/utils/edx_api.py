@@ -2,8 +2,9 @@
 edX API classes which call edX service REST API endpoints using the edx-rest-api-client module.
 """
 import logging
+import json
 from contextlib import contextmanager
-import requests
+
 import backoff
 from six import text_type
 from slumber.exceptions import HttpClientError, HttpServerError, HttpNotFoundError
@@ -226,7 +227,12 @@ class LmsApi(BaseApiClient):
             params['data']['force'] = True
 
         with correct_exception():
-            return self._client.api.user.v1.accounts.update_retirement_status.patch(**params)
+            resp = self._client.api.user.v1.accounts.update_retirement_status.patch(**params)
+            if isinstance(resp, bytes):
+                resp = str(resp, 'utf-8')
+            if isinstance(resp, str):
+                resp = json.loads(resp)
+            return resp
 
     @_retry_lms_api()
     def retirement_deactivate_logout(self, learner):
