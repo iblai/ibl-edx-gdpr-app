@@ -77,16 +77,17 @@ class TestViewsRetirement:
             ),
         )
         requests_mock.get(
-            f"https://{LMS_HOST}/api/user/v1/accounts/retirement_queue/" +
-            "?cool_off_days=0&states=PENDING&states=ENROLLMENTS_COMPLETE" +
-            "&states=LMS_COMPLETE&states=COMPLETE",
+            f"https://{LMS_HOST}/api/user/v1/accounts/retirement_queue/"
+            + "?cool_off_days=0&states=PENDING&states=ENROLLMENTS_COMPLETE"
+            + "&states=LMS_COMPLETE&states=COMPLETE",
             text=json.dumps(
-                {
-                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
-                    "expires_in": 3600,
-                    "token_type": "bearer",
-                    "scope": "read write",
-                }
+                [
+                    {
+                        "user": "23ba8d53c1094c41a8ebb42752cd283b",
+                        "current_state": "PENDING",
+                        "last_state": "ENROLLMENTS_COMPLETE",
+                    }
+                ]
             ),
         )
         client, _ = get_authenticated_client_and_user(user=self.staff)
