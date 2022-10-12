@@ -137,9 +137,9 @@ class RetirementClient:
         learner_list = []
         learners = self.get_learners_to_retire(cool_off_days=cool_off_days)
         if learners:
+            log.warning(learners)
             # Strip users that have already been completely retired e.g retired_xgxhgxh
             learner_list = [user['user']['username'] for user in learners if 'retired' not in user['user']['username']]
-            log.warning(learner_list)
         return learner_list
 
     def retire_learner(self, username):
