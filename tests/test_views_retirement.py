@@ -62,3 +62,35 @@ class TestViewsRetirement:
         assert resp.data["message"] == "{} added to retirements successfully".format(
             user.username
         )
+
+    def test_get_learners_in_retirement_pipeline_returns_200(self, requests_mock):
+        setup()
+        requests_mock.post(
+            f"https://{LMS_HOST}/oauth2/access_token",
+            text=json.dumps(
+                {
+                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
+                    "expires_in": 3600,
+                    "token_type": "bearer",
+                    "scope": "read write",
+                }
+            ),
+        )
+        client, _ = get_authenticated_client_and_user(user=self.staff)
+        data = {
+            "username": UserFactory().username,
+        }
+        client.post(
+            reverse("ibl_edx_gdpr_place_in_retirements"),
+            data,
+            format="json",
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        resp = client.get(
+            reverse("ibl_edx_gdpr_get_retirements"),
+            HTTP_AUTHORIZATION=f"Bearer {self.token}",
+        )
+
+        assert resp.status_code == 200
+        assert resp.data["message"] == 1
