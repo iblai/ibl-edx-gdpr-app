@@ -125,6 +125,7 @@ class TestViewsRetirement:
             text="{}",
         )
         requests_mock.post(f"https://{LMS_HOST}/api/enrollment/v1/unenroll/", text="{}")
+        requests_mock.post(f"https://{LMS_HOST}/api/user/v1/accounts/retire/", text="{}")
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
         client, _ = get_authenticated_client_and_user(user=self.staff)
