@@ -80,23 +80,12 @@ class TestViewsRetirement:
         for _ in range(5):
             usernames.append(UserFactory().username)
         requests_mock.get(
-            f"https://{LMS_HOST}/api/user/v1/accounts/retirement_queue/"
-            + "?cool_off_days=0&states=PENDING&states=ENROLLMENTS_COMPLETE"
-            + "&states=LMS_COMPLETE&states=COMPLETE",
+            f"https://{LMS_HOST}/api/user/v1/accounts/retirement_queue/",
             text=json.dumps(
                 [{"user": {"username": username}} for username in usernames]
             ),
         )
         client, _ = get_authenticated_client_and_user(user=self.staff)
-        data = {
-            "username": UserFactory().username,
-        }
-        client.post(
-            reverse("ibl_edx_gdpr_place_in_retirements"),
-            data,
-            format="json",
-            HTTP_AUTHORIZATION=f"Bearer {self.token}",
-        )
 
         resp = client.get(
             reverse("ibl_edx_gdpr_get_retirements"),
