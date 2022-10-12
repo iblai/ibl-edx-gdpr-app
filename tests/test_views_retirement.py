@@ -76,18 +76,15 @@ class TestViewsRetirement:
                 }
             ),
         )
+        usernames = []
+        for _ in range(5):
+            usernames.append(UserFactory().username)
         requests_mock.get(
             f"https://{LMS_HOST}/api/user/v1/accounts/retirement_queue/"
             + "?cool_off_days=0&states=PENDING&states=ENROLLMENTS_COMPLETE"
             + "&states=LMS_COMPLETE&states=COMPLETE",
             text=json.dumps(
-                [
-                    {
-                        "user": "23ba8d53c1094c41a8ebb42752cd283b",
-                        "current_state": "PENDING",
-                        "last_state": "ENROLLMENTS_COMPLETE",
-                    }
-                ]
+                [{"user": {"username": username}} for username in usernames]
             ),
         )
         client, _ = get_authenticated_client_and_user(user=self.staff)
