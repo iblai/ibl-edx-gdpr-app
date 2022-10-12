@@ -119,7 +119,7 @@ class TestViewsRetirement:
             }),
         )
         requests_mock.patch(
-            "https://lms.lenovo.com/api/user/v1/accounts/update_retirement_status/",
+            f"https://{LMS_HOST}/api/user/v1/accounts/update_retirement_status/",
             text='{}'
         )
         data = {"username": user.username}

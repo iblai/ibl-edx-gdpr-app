@@ -228,10 +228,6 @@ class LmsApi(BaseApiClient):
 
         with correct_exception():
             resp = self._client.api.user.v1.accounts.update_retirement_status.patch(**params)
-            if isinstance(resp, bytes):
-                resp = str(resp, 'utf-8')
-            if isinstance(resp, str):
-                resp = json.loads(resp)
             return resp
 
     @_retry_lms_api()
@@ -270,6 +266,10 @@ class LmsApi(BaseApiClient):
         """
         Unenrolls the user from all courses
         """
+        if isinstance(learner, bytes):
+            learner = str(learner, 'utf-8')
+        if isinstance(learner, str):
+            learner = json.loads(learner)
         params = {'data': {'username': learner['original_username']}}
         with correct_exception():
             return self._client.api.enrollment.v1.unenroll.post(**params)
