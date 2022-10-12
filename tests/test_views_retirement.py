@@ -97,8 +97,19 @@ class TestViewsRetirement:
         for username in message:
             assert username in usernames
 
-    def test_retire_user_with_profile_returns_200(self):
+    def test_retire_user_with_profile_returns_200(self, requests_mock):
         setup()
+        requests_mock.post(
+            f"https://{LMS_HOST}/oauth2/access_token",
+            text=json.dumps(
+                {
+                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
+                    "expires_in": 3600,
+                    "token_type": "bearer",
+                    "scope": "read write",
+                }
+            ),
+        )
         user = UserFactory()
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
@@ -109,5 +120,16 @@ class TestViewsRetirement:
         assert resp.status_code == 200
         assert resp.data == 1
 
-    def test_retire_user_no_profile_returns_200(self):
+    def test_retire_user_no_profile_returns_200(self, requests_mock):
         setup()
+        requests_mock.post(
+            f"https://{LMS_HOST}/oauth2/access_token",
+            text=json.dumps(
+                {
+                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
+                    "expires_in": 3600,
+                    "token_type": "bearer",
+                    "scope": "read write",
+                }
+            ),
+        )
