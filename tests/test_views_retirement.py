@@ -113,7 +113,10 @@ class TestViewsRetirement:
         user = UserFactory()
         requests_mock.get(
             f"https://{LMS_HOST}/api/user/v1/accounts/{user.username}/retirement_status/",
-            text=json.dumps(["COMPLETED"]),
+            text=json.dumps({
+                "current_state": {"state_name": "RETIRING_ENROLLMENTS"},
+                "original_username": user.username,
+            }),
         )
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
