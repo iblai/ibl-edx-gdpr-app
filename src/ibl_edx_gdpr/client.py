@@ -71,6 +71,11 @@ def _get_learner_state_index_or_exit(learner):
     Returns the index in the ALL_STATES retirement state list, validating that it is in
     an appropriate state to work on.
     """
+    if isinstance(learner, bytes):
+        learner = str(learner, "utf-8")
+    if isinstance(learner, str):
+        learner = json.loads(learner)
+
     try:
         learner_state = learner['current_state']['state_name']
         original_username = learner['original_username']
