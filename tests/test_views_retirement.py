@@ -76,7 +76,7 @@ class TestViewsRetirement:
                 }
             ),
         )
-        requests_mock.post(
+        requests_mock.get(
             f"https://{LMS_HOST}/api/user/v1/accounts/retirement_queue/" +
             "?cool_off_days=0&states=PENDING&states=ENROLLMENTS_COMPLETE" +
             "&states=LMS_COMPLETE&states=COMPLETE",
