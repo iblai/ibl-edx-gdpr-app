@@ -118,6 +118,10 @@ class TestViewsRetirement:
                 "original_username": user.username,
             }),
         )
+        requests_mock.patch(
+            "https://lms.lenovo.com/api/user/v1/accounts/update_retirement_status/",
+            text='{}'
+        )
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
         client, _ = get_authenticated_client_and_user(user=self.staff)
