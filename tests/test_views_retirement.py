@@ -66,7 +66,9 @@ class TestViewsRetirement:
     def test_get_learners_in_retirement_pipeline_returns_200(self, requests_mock):
         setup()
         requests_mock.post(
-            f"https://{LMS_HOST}/oauth2/access_token",
+            f"https://{LMS_HOST}/api/user/v1/accounts/retirement_queue/" +
+            "?cool_off_days=0&states=PENDING&states=ENROLLMENTS_COMPLETE" +
+            "&states=LMS_COMPLETE&states=COMPLETE",
             text=json.dumps(
                 {
                     "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
