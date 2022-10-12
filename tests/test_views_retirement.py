@@ -112,15 +112,8 @@ class TestViewsRetirement:
         )
         user = UserFactory()
         requests_mock.get(
-            f"https://lms.lenovo.com/api/user/v1/accounts/{user.username}/retirement_status/",
-            text=json.dumps(
-                {
-                    "access_token": "23ba8d53c1094c41a8ebb42752cd283b",
-                    "expires_in": 3600,
-                    "token_type": "bearer",
-                    "scope": "read write",
-                }
-            ),
+            f"https://{LMS_HOST}/api/user/v1/accounts/{user.username}/retirement_status/",
+            text=json.dumps(["COMPLETED"]),
         )
         data = {"username": user.username}
         UserProfileFactory.create(user=user)
