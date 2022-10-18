@@ -2,7 +2,7 @@ from tutor import hooks
 hooks.Filters.ENV_PATCHES.add_item(
     (
         "openedx-lms-common-settings",
-        "FEATURES[ACCOUNT_DELETION] = True"
+        "FEATURES['ACCOUNT_DELETION'] = True"
     )
 )
 hooks.Filters.ENV_PATCHES.add_item(
