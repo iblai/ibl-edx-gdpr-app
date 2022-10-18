@@ -14,7 +14,7 @@ hooks.Filters.ENV_PATCHES.add_item(
 hooks.Filters.ENV_PATCHES.add_item(
     (
         "openedx-lms-common-settings",
-        "RETIREMENT_SERVICE_WORKER_USERNAME=ibl.retirement.user"
+        "RETIREMENT_SERVICE_WORKER_USERNAME = 'ibl.retirement.user'"
     )
 )
 hooks.Filters.ENV_PATCHES.add_item(
