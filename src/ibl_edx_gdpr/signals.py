@@ -5,10 +5,6 @@ from django.contrib.auth.models import User
 import logging
 
 logging.getLogger(__name__)
-try:
-    from common.djangoapps.student.models import UserProfile
-except:
-    from student.models import UserProfile
 
 
 def retirement_handler(sender, instance, **kwargs):

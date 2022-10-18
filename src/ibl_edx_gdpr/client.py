@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 
 if RELEASE_LINE == 'ironwood':
     from openedx.core.djangolib.oauth2_retirement_utils import retire_dot_oauth2_models, retire_dop_oauth2_models
-    from student.models import (
+    from common.djangoapps.student.models import (
         get_retired_email_by_email,
         Registration
     )

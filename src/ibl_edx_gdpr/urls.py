@@ -1,24 +1,23 @@
 """
 Defines URL routes for the API.
 """
-from django.conf import settings
-from django.conf.urls import url
+from django.urls import re_path
 
 from ibl_edx_gdpr.views import retirement
 
 
 urlpatterns = [
-    url(
+    re_path(
         r'^place_in_retirements/',
         retirement.place_learner_in_retirement_pipeline,
         name="ibl_edx_gdpr_place_in_retirements"
     ),
-    url(
+    re_path(
         r'^retire_user/',
         retirement.retire_learner,
         name="ibl_edx_gdpr_retire_learner"
     ),
-    url(
+    re_path(
         r'',
         retirement.get_learners_in_retirement_pipeline,
         name="ibl_edx_gdpr_get_retirements"
