@@ -9,12 +9,13 @@ need to be configurable by open source partners and modifying the
 with a variety of unpleasant follow-on effects for the partner when
 upgrading the model at a later date.
 """
-
 import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import F
+
+import pytest
 
 from openedx.core.djangoapps.user_api.models import RetirementState, UserRetirementStatus
 
@@ -24,7 +25,7 @@ LOGGER = logging.getLogger(__name__)
 
 REQUIRED_STATES.insert(0, START_STATE)
 
-
+@pytest.mark.django_db
 class Command(BaseCommand):
     """
     Implementation of the populate command

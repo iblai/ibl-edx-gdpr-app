@@ -24,6 +24,5 @@ def reverse(name, args=None, kwargs=None):
     return django_reverse(f"ibl_edx_gdpr:{name}", args=args, kwargs=kwargs)
 
 
-@pytest.mark.django_db
 def setup():
     call_command("ibl_retirement_states")
