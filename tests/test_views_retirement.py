@@ -14,10 +14,6 @@ LMS_HOST = "lms.lenovo.com"
 
 
 class TestViewsRetirement:
-    @pytest.fixture(autouse=True)
-    def enable_db_access(db):
-        pass
-
     @property
     def staff(self):
         if hasattr(self, "_staff") is False:
