@@ -32,7 +32,7 @@ class TestViewsRetirement:
             user=self.staff, application=self.application
         ).token
 
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     def test_place_learner_in_retirement_pipeline_returns_200(self, requests_mock):
         setup()
         requests_mock.post(
@@ -64,7 +64,7 @@ class TestViewsRetirement:
             user.username
         )
 
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     def test_get_learners_in_retirement_pipeline_returns_200(self, requests_mock):
         setup()
         requests_mock.post(
@@ -99,7 +99,7 @@ class TestViewsRetirement:
         for username in message:
             assert username in usernames
 
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     def test_retire_user_with_profile_returns_200(self, requests_mock):
         setup()
         requests_mock.post(

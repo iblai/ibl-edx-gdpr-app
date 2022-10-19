@@ -25,7 +25,6 @@ LOGGER = logging.getLogger(__name__)
 
 REQUIRED_STATES.insert(0, START_STATE)
 
-@pytest.mark.django_db
 class Command(BaseCommand):
     """
     Implementation of the populate command
