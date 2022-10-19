@@ -1,5 +1,5 @@
 import json
-
+from django.core.management import call_command
 import pytest
 from common.djangoapps.student.tests.factories import UserFactory, UserProfileFactory
 from django.apps import apps
@@ -32,8 +32,9 @@ class TestViewsRetirement:
             user=self.staff, application=self.application
         ).token
 
+    @pytest.mark.django_db
     def test_place_learner_in_retirement_pipeline_returns_200(self, requests_mock):
-        setup()
+        call_command("ibl_retirement_states")
         requests_mock.post(
             f"https://{LMS_HOST}/oauth2/access_token",
             text=json.dumps(
@@ -63,8 +64,9 @@ class TestViewsRetirement:
             user.username
         )
 
+    @pytest.mark.django_db
     def test_get_learners_in_retirement_pipeline_returns_200(self, requests_mock):
-        setup()
+        call_command("ibl_retirement_states")
         requests_mock.post(
             f"https://{LMS_HOST}/oauth2/access_token",
             text=json.dumps(
@@ -97,8 +99,9 @@ class TestViewsRetirement:
         for username in message:
             assert username in usernames
 
+    @pytest.mark.django_db
     def test_retire_user_with_profile_returns_200(self, requests_mock):
-        setup()
+        call_command("ibl_retirement_states")
         requests_mock.post(
             f"https://{LMS_HOST}/oauth2/access_token",
             text=json.dumps(
