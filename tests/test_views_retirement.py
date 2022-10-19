@@ -8,7 +8,7 @@ from openedx.core.djangoapps.oauth_dispatch.tests.factories import (
     ApplicationFactory,
 )
 
-from .utils import get_authenticated_client_and_user, reverse, setup
+from .utils import get_authenticated_client_and_user, reverse
 
 LMS_HOST = "lms.lenovo.com"
 
