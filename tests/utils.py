@@ -1,3 +1,4 @@
+import pytest
 from common.djangoapps.student.tests.factories import UserFactory
 from django.core.management import call_command
 from django.shortcuts import reverse as django_reverse
@@ -23,5 +24,6 @@ def reverse(name, args=None, kwargs=None):
     return django_reverse(f"ibl_edx_gdpr:{name}", args=args, kwargs=kwargs)
 
 
+@pytest.mark.django_db
 def setup():
     call_command("ibl_retirement_states")
