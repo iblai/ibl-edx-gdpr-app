@@ -1,28 +1,14 @@
 from functools import wraps
 import logging
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.viewsets import ViewSet
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
-from edx_rest_framework_extensions.auth.jwt.authentication import JwtAuthentication
 from rest_framework import permissions, status
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
-from rest_framework.views import APIView
-from rest_framework.viewsets import ViewSet
-
 from ibl_edx_gdpr.utils.permissions import CanRetireUser
 from ibl_edx_gdpr.client import RetirementClient
-log = logging.getLogger(__name__)
 
-try:
-    # Ironwood
-    from openedx.core.lib.api.authentication import OAuth2AuthenticationAllowInactiveUser as OAuth2Authentication
-except:
-    # KOA
-    from openedx.core.lib.api.authentication import BearerAuthentication as OAuth2Authentication
+from openedx.core.lib.api.authentication import BearerAuthentication as OAuth2Authentication
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +53,7 @@ def get_learners_in_retirement_pipeline(request):
         usernames = client.get_learners_to_retire_usernames()
 
     except Exception as e:
+        logger.error(e)
         logger.error("Error processing task {}".format(e.args))
         return Response({'error': 'Failed to fetch retirements'}, status=400)
     return Response({'message': usernames})

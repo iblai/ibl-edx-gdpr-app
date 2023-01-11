@@ -53,7 +53,7 @@ if getattr(settings.FEATURES, 'ENABLE_DISCUSSION_SERVICE', None):
     IBL_RETIREMENT_PIPELINE += ['RETIRING_FORUMS', 'FORUMS_COMPLETE', 'retirement_retire_forum']
 
 # LMS should always be last
-IBL_RETIREMENT_PIPELINE+= ['RETIRING_LMS', 'LMS_COMPLETE', 'retirement_lms_retire'],
+IBL_RETIREMENT_PIPELINE += ['RETIRING_LMS', 'LMS_COMPLETE', 'retirement_lms_retire'],
 IBL_RETIREMENT_APPNAME = 'IBL Retirement App'
 IBL_RETIREMENT_SERVICE_WORKER = 'ibl.retirement.user'
 IBL_RETIREMENT_EMAIL = '{}@ibleducation.com'.format(IBL_RETIREMENT_SERVICE_WORKER)

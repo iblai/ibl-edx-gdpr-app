@@ -2,8 +2,9 @@
 edX API classes which call edX service REST API endpoints using the edx-rest-api-client module.
 """
 import logging
+import json
 from contextlib import contextmanager
-import requests
+
 import backoff
 from six import text_type
 from slumber.exceptions import HttpClientError, HttpServerError, HttpNotFoundError
@@ -226,7 +227,8 @@ class LmsApi(BaseApiClient):
             params['data']['force'] = True
 
         with correct_exception():
-            return self._client.api.user.v1.accounts.update_retirement_status.patch(**params)
+            resp = self._client.api.user.v1.accounts.update_retirement_status.patch(**params)
+            return resp
 
     @_retry_lms_api()
     def retirement_deactivate_logout(self, learner):
@@ -264,6 +266,10 @@ class LmsApi(BaseApiClient):
         """
         Unenrolls the user from all courses
         """
+        if isinstance(learner, bytes):
+            learner = str(learner, 'utf-8')
+        if isinstance(learner, str):
+            learner = json.loads(learner)
         params = {'data': {'username': learner['original_username']}}
         with correct_exception():
             return self._client.api.enrollment.v1.unenroll.post(**params)
@@ -293,6 +299,10 @@ class LmsApi(BaseApiClient):
         """
         Deletes, blanks, or one-way hashes all remaining personal information in LMS
         """
+        if isinstance(learner, bytes):
+            learner = str(learner, 'utf-8')
+        if isinstance(learner, str):
+            learner = json.loads(learner)
         params = {'data': {'username': learner['original_username']}}
         with correct_exception():
             return self._client.api.user.v1.accounts.retire.post(**params)

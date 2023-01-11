@@ -12,7 +12,11 @@ def create_oauth_app():
         call_command('lms', "manage_user", IBL_RETIREMENT_SERVICE_WORKER,
                      IBL_RETIREMENT_EMAIL, staff=True, superuser=True)
     except CommandError:
-        raise Exception('Create retirement user failed')
+        try:
+            call_command("manage_user", IBL_RETIREMENT_SERVICE_WORKER,
+                         IBL_RETIREMENT_EMAIL, staff=True, superuser=True)
+        except CommandError:
+            raise Exception('Create retirement user failed')
 
     user = User.objects.get(username=IBL_RETIREMENT_SERVICE_WORKER)
     application_kwargs = dict(
