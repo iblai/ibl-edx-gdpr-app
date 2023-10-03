@@ -192,9 +192,18 @@ class RetirementClient:
 
             # Emit event to help ibl-edx-log-cleanup to run
             event_dict = {
-                retirement.original_username: retirement.user.username,
-                retirement.original_email: retirement.user.email,
-                retirement.original_name: ""
+                "username":{
+                    "old":retirement.original_username,
+                    "new":retirement.user.username
+                },
+                "email":{
+                    "old":retirement.original_email,
+                    "new":retirement.user.email
+                },
+                "name":{
+                    "old":retirement.original_name,
+                    "new":""
+                }
             }
             tracker.emit(IBL_GDPR_LOG_CLEANUP, event_dict)
 

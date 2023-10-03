@@ -22,7 +22,7 @@ else:
 
 setup(
     name='ibl_edx_gdpr',
-    version='1.3.4',
+    version='1.3.5',
     description='IBL EDX GDPR API',
     author='IBL',
     author_email='info@ibleducation.com',
@@ -32,8 +32,8 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     include_package_data=True,
     install_requires=[
-        "backoff==1.5.0",
-        "yagocd==0.4.4"
+        "backoff>=1.5.0",
+        "yagocd>=0.4.4"
     ],
     entry_points={
         'lms.djangoapp': [
