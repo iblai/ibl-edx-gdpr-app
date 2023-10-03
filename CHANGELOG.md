@@ -1,5 +1,24 @@
 # CHANGELOG
 
+### 1.3.5
+- Update response for retirement completion
+```
+  event_dict = {
+      "username":{
+          "old":retirement.original_username,
+          "new":retirement.user.username
+      },
+      "email":{
+          "old":retirement.original_email,
+          "new":retirement.user.email
+      },
+      "name":{
+          "old":retirement.original_name,
+          "new":""
+      }
+  }
+ ```
+
 ### 3 Mar 2022
 - Replaces the `ibl.retirement.user` creation to use the edX `manage_user` interface instead
 
